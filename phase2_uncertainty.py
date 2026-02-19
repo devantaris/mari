@@ -1,6 +1,7 @@
 import pandas as pd
 import numpy as np
 
+import joblib
 from sklearn.model_selection import train_test_split
 from sklearn.metrics import roc_auc_score
 from xgboost import XGBClassifier
@@ -33,6 +34,7 @@ scale_pos_weight = (len(y_train) - y_train.sum()) / y_train.sum()
 # -----------------------------
 n_models = 5
 probs = []
+models = []
 
 for seed in range(n_models):
 
@@ -61,6 +63,7 @@ for seed in range(n_models):
     )
 
     model.fit(X_boot, y_boot)
+    models.append(model)
 
     prob = model.predict_proba(X_test)[:, 1]
     probs.append(prob)
@@ -173,3 +176,9 @@ for _, row in results.iterrows():
 print("\n===== TOTAL SYSTEM COST =====")
 print("Total Cost:", total_cost)
 print("Average Cost per Transaction:", total_cost / len(results))
+
+import os
+os.makedirs("artifacts", exist_ok=True)
+
+joblib.dump(models, "artifacts/xgb_ensemble.pkl")
+print("Ensemble saved successfully.")

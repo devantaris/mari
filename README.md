@@ -1,0 +1,175 @@
+Risk-Aware Financial Transaction Decision System
+
+A production-grade fraud detection and decision intelligence engine combining ensemble machine learning, predictive uncertainty, novelty detection, and cost-aware routing — deployed as a Dockerized FastAPI service.
+
+🚀 Overview
+
+This project moves beyond binary fraud classification.
+
+It implements a risk-aware financial decision engine that integrates:
+
+Bootstrap XGBoost ensemble modeling
+
+Predictive uncertainty estimation (epistemic)
+
+Isolation Forest novelty detection
+
+Two-axis routing logic (Risk × Uncertainty)
+
+Cost-aware decision optimization
+
+5-state fraud control architecture
+
+Containerized REST API deployment
+
+The system is designed as a deployable backend service, not just a research notebook.
+
+🧠 System Architecture
+Client / UI
+      ↓
+FastAPI API Layer (/predict)
+      ↓
+DecisionEngine
+      ├── XGBoost Bootstrap Ensemble
+      ├── Ensemble Std (Uncertainty)
+      ├── Isolation Forest (Novelty Layer)
+      ├── Cost Simulation Layer
+      └── 5-State Routing Logic
+              • APPROVE
+              • STEP_UP_AUTH
+              • ESCALATE_INVEST
+              • DECLINE
+              • ABSTAIN
+📊 Decision Framework (2-Axis Logic)
+
+The system makes decisions using two dimensions:
+
+Risk Score → Mean probability from ensemble
+
+Uncertainty → Standard deviation across bootstrap models
+
+Routing Strategy
+Risk Level	Uncertainty	Decision
+High	Low	DECLINE
+High	High	ESCALATE_INVEST
+Medium	Any	STEP_UP_AUTH
+Low	High	ABSTAIN
+Low	Low	APPROVE
+
+Isolation Forest can override to ESCALATE_INVEST if novel behavior is detected.
+
+🔬 Model Validation
+
+ROC-AUC ≈ 0.986
+
+Reliability curve verified calibration
+
+Brier score improved post-calibration
+
+Bootstrap uncertainty validated
+
+Cost-based threshold optimization tested
+
+SHAP explainability implemented during research phase
+
+🏗 Project Structure
+backend/
+    engine/
+        decision_engine.py
+    config/
+
+api/
+    main.py
+
+artifacts/
+    xgb_ensemble.pkl
+    isolation_forest.pkl
+
+Dockerfile
+requirements.txt
+
+Research phase scripts are preserved separately and remain untouched.
+
+🔌 API Usage
+POST /predict
+
+Request body:
+
+{
+  "features": [ ... 31 numerical features ... ]
+}
+
+Example response:
+
+{
+  "decision": "STEP_UP_AUTH",
+  "risk_score": 0.42,
+  "uncertainty": 0.01,
+  "novelty_flag": false,
+  "tier": "medium_risk",
+  "costs": {
+    "expected_loss": 420.0,
+    "manual_review_cost": 20.0,
+    "net_utility": -440.0
+  }
+}
+
+Swagger UI available at:
+
+http://localhost:8000/docs
+🐳 Running Locally (Docker)
+
+Build the image:
+
+docker build -t fraud-api .
+
+Run the container:
+
+docker run -p 8000:8000 fraud-api
+
+Access API:
+
+http://localhost:8000/docs
+🎯 Key Contributions
+
+Ensemble-based fraud probability estimation
+
+Uncertainty-aware routing
+
+Novelty detection layer for unseen behavior
+
+Cost-sensitive decision modeling
+
+Production-ready REST API
+
+Fully Dockerized deployment pipeline
+
+📦 Dataset
+
+Kaggle Credit Card Fraud Detection Dataset
+
+284,807 transactions
+
+0.172% fraud rate
+
+Severe class imbalance
+
+🔮 Future Extensions
+
+Live monitoring endpoint
+
+Threshold auto-optimization via expected utility
+
+Zone-specific uncertainty thresholds
+
+Real-time transaction streaming
+
+Public cloud deployment
+
+🏁 Status
+
+✅ Research validated
+✅ Production inference engine
+✅ FastAPI wrapper
+✅ Dockerized backend
+⬜ Public cloud deployment (next step)

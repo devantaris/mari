@@ -1,30 +1,26 @@
-Risk-Aware Financial Transaction Decision System
+# Risk-Aware Financial Transaction Decision System
 
 A production-grade fraud detection and decision intelligence engine combining ensemble machine learning, predictive uncertainty, novelty detection, and cost-aware routing — deployed as a Dockerized FastAPI service.
 
-🚀 Overview
+## 🚀 Overview
 
 This project moves beyond binary fraud classification.
 
 It implements a risk-aware financial decision engine that integrates:
 
-Bootstrap XGBoost ensemble modeling
-
-Predictive uncertainty estimation (epistemic)
-
-Isolation Forest novelty detection
-
-Two-axis routing logic (Risk × Uncertainty)
-
-Cost-aware decision optimization
-
-5-state fraud control architecture
-
-Containerized REST API deployment
+- Bootstrap XGBoost ensemble modeling
+- Predictive uncertainty estimation (epistemic)
+- Isolation Forest novelty detection
+- Two-axis routing logic (Risk × Uncertainty)
+- Cost-aware decision optimization
+- 5-state fraud control architecture
+- Containerized REST API deployment
 
 The system is designed as a deployable backend service, not just a research notebook.
 
-🧠 System Architecture
+## 🧠 System Architecture
+
+```
 Client / UI
       ↓
 FastAPI API Layer (/predict)
@@ -40,39 +36,39 @@ DecisionEngine
               • ESCALATE_INVEST
               • DECLINE
               • ABSTAIN
-📊 Decision Framework (2-Axis Logic)
+```
+
+## 📊 Decision Framework (2-Axis Logic)
 
 The system makes decisions using two dimensions:
 
-Risk Score → Mean probability from ensemble
+- **Risk Score** → Mean probability from ensemble
+- **Uncertainty** → Standard deviation across bootstrap models
 
-Uncertainty → Standard deviation across bootstrap models
+### Routing Strategy
 
-Routing Strategy
-Risk Level	Uncertainty	Decision
-High	Low	DECLINE
-High	High	ESCALATE_INVEST
-Medium	Any	STEP_UP_AUTH
-Low	High	ABSTAIN
-Low	Low	APPROVE
+| Risk Level | Uncertainty | Decision           |
+|------------|-------------|--------------------|
+| High       | Low         | DECLINE            |
+| High       | High        | ESCALATE_INVEST    |
+| Medium     | Any         | STEP_UP_AUTH       |
+| Low        | High        | ABSTAIN            |
+| Low        | Low         | APPROVE            |
 
 Isolation Forest can override to ESCALATE_INVEST if novel behavior is detected.
 
-🔬 Model Validation
+## 🔬 Model Validation
 
-ROC-AUC ≈ 0.986
+- ROC-AUC ≈ 0.986
+- Reliability curve verified calibration
+- Brier score improved post-calibration
+- Bootstrap uncertainty validated
+- Cost-based threshold optimization tested
+- SHAP explainability implemented during research phase
 
-Reliability curve verified calibration
+## 🏗 Project Structure
 
-Brier score improved post-calibration
-
-Bootstrap uncertainty validated
-
-Cost-based threshold optimization tested
-
-SHAP explainability implemented during research phase
-
-🏗 Project Structure
+```
 backend/
     engine/
         decision_engine.py
@@ -87,20 +83,25 @@ artifacts/
 
 Dockerfile
 requirements.txt
+```
 
 Research phase scripts are preserved separately and remain untouched.
 
-🔌 API Usage
-POST /predict
+## 🔌 API Usage
 
-Request body:
+### POST /predict
 
+**Request body:**
+
+```json
 {
   "features": [ ... 31 numerical features ... ]
 }
+```
 
-Example response:
+**Example response:**
 
+```json
 {
   "decision": "STEP_UP_AUTH",
   "risk_score": 0.42,
@@ -113,63 +114,58 @@ Example response:
     "net_utility": -440.0
   }
 }
+```
 
-Swagger UI available at:
+**Swagger UI available at:**
 
 http://localhost:8000/docs
-🐳 Running Locally (Docker)
 
-Build the image:
+## 🐳 Running Locally (Docker)
 
+**Build the image:**
+
+```bash
 docker build -t fraud-api .
+```
 
-Run the container:
+**Run the container:**
 
+```bash
 docker run -p 8000:8000 fraud-api
+```
 
-Access API:
+**Access API:**
 
 http://localhost:8000/docs
-🎯 Key Contributions
 
-Ensemble-based fraud probability estimation
+## 🎯 Key Contributions
 
-Uncertainty-aware routing
+- Ensemble-based fraud probability estimation
+- Uncertainty-aware routing
+- Novelty detection layer for unseen behavior
+- Cost-sensitive decision modeling
+- Production-ready REST API
+- Fully Dockerized deployment pipeline
 
-Novelty detection layer for unseen behavior
+## 📦 Dataset
 
-Cost-sensitive decision modeling
+- Kaggle Credit Card Fraud Detection Dataset
+- 284,807 transactions
+- 0.172% fraud rate
+- Severe class imbalance
 
-Production-ready REST API
+## 🔮 Future Extensions
 
-Fully Dockerized deployment pipeline
+- Live monitoring endpoint
+- Threshold auto-optimization via expected utility
+- Zone-specific uncertainty thresholds
+- Real-time transaction streaming
+- Public cloud deployment
 
-📦 Dataset
+## 🏁 Status
 
-Kaggle Credit Card Fraud Detection Dataset
-
-284,807 transactions
-
-0.172% fraud rate
-
-Severe class imbalance
-
-🔮 Future Extensions
-
-Live monitoring endpoint
-
-Threshold auto-optimization via expected utility
-
-Zone-specific uncertainty thresholds
-
-Real-time transaction streaming
-
-Public cloud deployment
-
-🏁 Status
-
-✅ Research validated
-✅ Production inference engine
-✅ FastAPI wrapper
-✅ Dockerized backend
-⬜ Public cloud deployment (next step)
+- ✅ Research validated
+- ✅ Production inference engine
+- ✅ FastAPI wrapper
+- ✅ Dockerized backend
+- ⬜ Public cloud deployment (next step)

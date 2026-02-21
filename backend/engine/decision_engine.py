@@ -89,7 +89,7 @@ class DecisionEngine:
             return None, False
 
         score = float(self.anomaly_model.decision_function(X)[0])
-        novelty_flag = score > self.anomaly_threshold
+        novelty_flag = score < self.anomaly_threshold
 
         return score, novelty_flag
 

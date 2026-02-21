@@ -3,3 +3,5 @@ __pycache__/
 *.pyc
 creditcard.csv
 creditcard_phase0_clean.csv
+node_modules/
+dist/

@@ -1,0 +1,238 @@
+%% ============================================================
+%% SEQUENCE DIAGRAM 1: Primary User Request Flow (API Prediction)
+%% ============================================================
+
+sequenceDiagram
+    autonumber
+
+    participant Client as Client / Streamlit UI
+    participant FastAPI as FastAPI (api/main.py)
+    participant Pydantic as TransactionInput Validator
+    participant Engine as DecisionEngine
+    participant XGB as XGBoost Ensemble (5 models)
+    participant ISO as Isolation Forest
+    participant CostSim as Cost Simulator
+    participant TierCalc as Tier Calculator
+
+    Client->>+FastAPI: POST /predict { "features": [31 floats] }
+    FastAPI->>+Pydantic: Validate TransactionInput
+    
+    alt Feature count != 31
+        Pydantic-->>FastAPI: Validation passes (Pydantic only checks type)
+        FastAPI-->>Client: { "error": "Expected 31 features" }
+    else Feature count == 31
+        Pydantic-->>-FastAPI: Valid TransactionInput
+        FastAPI->>FastAPI: np.array(features).reshape(1, -1)
+        FastAPI->>+Engine: evaluate_transaction(X)
+        
+        Engine->>+XGB: predict_proba(X)
+        loop For each of 5 bootstrap models
+            XGB->>XGB: model.predict_proba(X)[:, 1]
+        end
+        XGB->>XGB: np.vstack(probs)
+        XGB->>XGB: mean = np.mean(probs)
+        XGB->>XGB: std = np.std(probs)
+        XGB-->>-Engine: (mean_prob, std_prob)
+        
+        Engine->>+ISO: anomaly_score(X)
+        alt Isolation Forest loaded
+            ISO->>ISO: decision_function(X)[0]
+            ISO->>ISO: Compare score > anomaly_threshold (-0.08)
+            ISO-->>Engine: (score, novelty_flag)
+        else Isolation Forest not loaded
+            ISO-->>-Engine: (None, False)
+        end
+        
+        Engine->>Engine: decide(prob, uncertainty, novelty_flag)
+        Note over Engine: 5-State Routing Logic:
+        Note over Engine: 1. prob >= 0.80 AND unc < 0.02 → DECLINE
+        Note over Engine: 2. prob >= 0.60 AND unc >= 0.02 → ESCALATE_INVEST
+        Note over Engine: 3. 0.30 <= prob < 0.80 → STEP_UP_AUTH
+        Note over Engine: 4. prob < 0.30 AND unc >= 0.02 → ABSTAIN
+        Note over Engine: 5. novelty_flag → ESCALATE_INVEST
+        Note over Engine: 6. Otherwise → APPROVE
+        
+        Engine->>+CostSim: estimate_cost(prob, decision)
+        CostSim->>CostSim: expected_loss = prob * 1000
+        CostSim->>CostSim: manual_cost = 20 (if review needed) or 0
+        CostSim->>CostSim: net_utility = -expected_loss - manual_cost
+        CostSim-->>-Engine: (expected_loss, manual_cost, net_utility)
+        
+        Engine->>+TierCalc: tier(prob)
+        TierCalc-->>-Engine: "high_risk" / "medium_risk" / "low_risk"
+        
+        Engine-->>-FastAPI: Full result dict
+        FastAPI-->>Client: JSON response
+    end
+
+%% ============================================================
+%% SEQUENCE DIAGRAM 2: Streamlit Frontend Flow
+%% ============================================================
+
+sequenceDiagram
+    autonumber
+
+    participant User as End User
+    participant Streamlit as Streamlit App (frontend/app.py)
+    participant Generator as Feature Generator
+    participant API as FastAPI API (localhost:8000)
+
+    User->>+Streamlit: Click "Generate {DECISION}" button
+
+    Streamlit->>Streamlit: Enter spinner state
+
+    loop Up to 500 attempts (max_attempts)
+        Streamlit->>+Generator: generate_random_transaction()
+        Generator->>Generator: time = uniform(0, 172800)
+        Generator->>Generator: amount = uniform(1, 5000)
+        Generator->>Generator: pca_features = normal(0, 1, 28)
+        Generator->>Generator: Assemble 31-element list
+        Generator-->>-Streamlit: features (list of 31 floats)
+
+        Streamlit->>+API: POST /predict { "features": [...] }
+        API-->>-Streamlit: JSON response (decision, risk_score, ...)
+
+        alt response.decision == target_decision
+            Streamlit->>Streamlit: Store in session_state
+            Note over Streamlit: Break loop – match found
+        else response.decision != target_decision
+            Note over Streamlit: Continue loop
+        end
+    end
+
+    alt Match found
+        Streamlit-->>User: Display Transaction Summary
+        Streamlit-->>User: Display Risk Analysis (progress bar + score)
+        Streamlit-->>User: Display Uncertainty Analysis
+        Streamlit-->>User: Display Novelty Detection
+        Streamlit-->>User: Display Routing Explanation
+        Streamlit-->>User: Display Cost Simulation (JSON)
+        Streamlit-->>User: Display Full Engine Output (JSON)
+    else No match in 500 attempts
+        Streamlit-->>-User: Warning: "Could not generate example"
+    end
+
+%% ============================================================
+%% SEQUENCE DIAGRAM 3: Model Training / Research Pipeline Flow
+%% ============================================================
+
+sequenceDiagram
+    autonumber
+
+    participant Dev as Developer / Researcher
+    participant P0C as phase0_cleaning.py
+    participant P0E as phase0_exploration.py
+    participant P1M as phase1_modeling.py
+    participant P1X as phase1_xgboost.py
+    participant P2U as phase2_uncertainty.py
+    participant P3E as phase3_explainability.py
+    participant P4O as phase4_outlier.py
+    participant P5R as phase5_reliability.py
+    participant Disk as File System
+
+    Dev->>+P0E: Run exploration
+    P0E->>Disk: Read creditcard.csv
+    P0E->>P0E: Compute class distribution, amount stats
+    P0E->>P0E: Generate visualizations (matplotlib/seaborn)
+    P0E-->>-Dev: Printed stats + plots
+
+    Dev->>+P0C: Run cleaning
+    P0C->>Disk: Read creditcard.csv
+    P0C->>P0C: Sort by Time
+    P0C->>P0C: Create hour = (Time/3600) % 24
+    P0C->>P0C: Create delta_time = Time.diff()
+    P0C->>P0C: Drop raw Time column
+    P0C->>P0C: Assert no NaN, assert 284807 rows
+    P0C->>Disk: Save creditcard_phase0_clean.csv
+    P0C-->>-Dev: "Phase 0 cleaning complete"
+
+    Dev->>+P1M: Run baseline logistic model
+    P1M->>Disk: Read creditcard_phase0_clean.csv
+    P1M->>P1M: log1p(Amount)
+    P1M->>P1M: train_test_split (80/20, stratified, seed=42)
+    P1M->>P1M: StandardScaler
+    P1M->>P1M: LogisticRegression(max_iter=1000, class_weight=balanced)
+    P1M->>P1M: Evaluate ROC-AUC, classification report
+    P1M->>P1M: 3-tier analysis (high/medium/low risk)
+    P1M-->>-Dev: Results + precision-recall curve + probability distribution
+
+    Dev->>+P1X: Run calibrated XGBoost
+    P1X->>Disk: Read creditcard_phase0_clean.csv
+    P1X->>P1X: XGBClassifier(n_est=300, depth=4, lr=0.05, GPU)
+    P1X->>P1X: CalibratedClassifierCV(isotonic, cv=3)
+    P1X->>P1X: Optimize threshold (recall >= 0.85)
+    P1X->>P1X: 3-tier risk system (T_block=0.8)
+    P1X-->>-Dev: ROC-AUC + optimal threshold + tier analysis
+
+    Dev->>+P2U: Run bootstrap ensemble + cost simulation
+    P2U->>Disk: Read creditcard_phase0_clean.csv
+    loop 5 bootstrap iterations (seed 0-4)
+        P2U->>P2U: Bootstrap sample X_train
+        P2U->>P2U: XGBClassifier(300, depth=4, lr=0.05, CPU)
+        P2U->>P2U: CalibratedClassifierCV(isotonic, cv=3)
+    end
+    P2U->>P2U: Compute mean_prob, uncertainty (std)
+    P2U->>P2U: 2D routing (6 decisions)
+    P2U->>P2U: Business cost simulation
+    P2U->>Disk: Save artifacts/xgb_ensemble.pkl
+    P2U->>Disk: Save phase2_results.csv
+    P2U-->>-Dev: Decision distribution + cost analysis
+
+    Dev->>+P3E: Run SHAP explainability
+    P3E->>Disk: Read creditcard_phase0_clean.csv
+    P3E->>Disk: Read phase2_results.csv
+    P3E->>P3E: Train base XGBClassifier (GPU)
+    P3E->>P3E: SHAP TreeExplainer
+    P3E->>P3E: Global summary plot
+    P3E->>P3E: Explain fraud case, legit case, ABSTAIN case
+    P3E-->>-Dev: SHAP plots
+
+    Dev->>+P4O: Run Isolation Forest training
+    P4O->>Disk: Read creditcard_phase0_clean.csv
+    P4O->>P4O: Train ONLY on legitimate transactions
+    P4O->>P4O: IsolationForest(n_est=200, contam=0.001)
+    P4O->>P4O: Compute anomaly scores
+    P4O->>P4O: Compare fraud vs legit distributions
+    P4O->>P4O: Simple threshold detection test
+    P4O->>Disk: Save artifacts/isolation_forest.pkl
+    P4O-->>-Dev: Anomaly stats + detection rate
+
+    Dev->>+P5R: Run reliability check
+    P5R->>Disk: Read creditcard_phase0_clean.csv
+    P5R->>P5R: Train raw XGBClassifier (GPU)
+    P5R->>P5R: Train calibrated version (isotonic, cv=3)
+    P5R->>P5R: Compare Brier scores
+    P5R->>P5R: Plot reliability curves
+    P5R-->>-Dev: Brier scores + reliability curve
+
+%% ============================================================
+%% SEQUENCE DIAGRAM 4: Docker Deployment Flow
+%% ============================================================
+
+sequenceDiagram
+    autonumber
+
+    participant Dev as Developer
+    participant Docker as Docker Engine
+    participant Image as Docker Image (fraud-api)
+    participant Container as Running Container
+    participant Uvicorn as Uvicorn Server
+
+    Dev->>+Docker: docker build -t fraud-api .
+    Docker->>Docker: FROM python:3.11
+    Docker->>Docker: WORKDIR /app
+    Docker->>Docker: COPY requirements.txt .
+    Docker->>Docker: pip install --no-cache-dir -r requirements.txt
+    Docker->>Docker: COPY . .
+    Docker-->>-Dev: Image built
+
+    Dev->>+Docker: docker run -p 8000:8000 fraud-api
+    Docker->>+Container: Start container
+    Container->>+Uvicorn: python -m uvicorn api.main:app --host 0.0.0.0 --port 8000
+    Uvicorn->>Uvicorn: Import api.main
+    Uvicorn->>Uvicorn: Instantiate DecisionEngine()
+    Uvicorn->>Uvicorn: Load xgb_ensemble.pkl (5 models)
+    Uvicorn->>Uvicorn: Load isolation_forest.pkl
+    Uvicorn-->>-Container: Server ready on 0.0.0.0:8000
+    Container-->>-Docker: Container running
+    Docker-->>-Dev: Mapped to localhost:8000

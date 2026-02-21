@@ -1,0 +1,126 @@
+%%{init: {'theme': 'base', 'themeVariables': { 'primaryColor': '#1a1a2e', 'edgeLabelBackground':'#ffffff'}}}%%
+graph TB
+
+    subgraph CLIENT_LAYER["Client / UI Layer"]
+        direction LR
+        STREAMLIT["Streamlit Frontend<br/>(frontend/app.py)<br/>Port: 8501"]
+        SWAGGER["Swagger UI<br/>/docs"]
+        EXTERNAL_CLIENT["External HTTP Client"]
+    end
+
+    subgraph API_LAYER["API Layer – FastAPI"]
+        direction TB
+        FASTAPI["FastAPI Application<br/>(api/main.py)<br/>Port: 8000"]
+        ROOT_ENDPOINT["GET /<br/>Health Check"]
+        PREDICT_ENDPOINT["POST /predict<br/>Transaction Evaluation"]
+        PYDANTIC["TransactionInput<br/>Pydantic Model<br/>(list of 31 floats)"]
+    end
+
+    subgraph ENGINE_LAYER["Decision Engine Layer"]
+        direction TB
+        ENGINE["DecisionEngine<br/>(backend/engine/decision_engine.py)"]
+        
+        subgraph ENSEMBLE_SUBSYSTEM["Ensemble Prediction Subsystem"]
+            ENSEMBLE["XGBoost Bootstrap Ensemble<br/>(5 calibrated models)"]
+            PREDICT_PROBA["predict_proba()<br/>→ mean_prob, std_prob"]
+        end
+
+        subgraph ANOMALY_SUBSYSTEM["Anomaly Detection Subsystem"]
+            ISOLATION["Isolation Forest<br/>Novelty Detector"]
+            ANOMALY_SCORE["anomaly_score()<br/>→ score, novelty_flag"]
+        end
+
+        subgraph ROUTING_SUBSYSTEM["5-State Routing Logic"]
+            DECIDE["decide()<br/>2-Axis: Risk × Uncertainty"]
+            APPROVE["APPROVE"]
+            STEP_UP["STEP_UP_AUTH"]
+            ESCALATE["ESCALATE_INVEST"]
+            DECLINE["DECLINE"]
+            ABSTAIN["ABSTAIN"]
+        end
+
+        subgraph COST_SUBSYSTEM["Cost Simulation Layer"]
+            COST["estimate_cost()<br/>→ expected_loss, manual_cost, net_utility"]
+        end
+
+        TIER["tier()<br/>→ high_risk / medium_risk / low_risk"]
+    end
+
+    subgraph ARTIFACT_LAYER["Serialized Model Artifacts"]
+        XGB_PKL["xgb_ensemble.pkl<br/>(6.8 MB – 5 CalibratedClassifierCV models)"]
+        ISO_PKL["isolation_forest.pkl<br/>(1.8 MB – IsolationForest)"]
+    end
+
+    subgraph LOGGING_LAYER["Logging Infrastructure"]
+        LOGGER["logger.py<br/>(backend/config/logger.py)<br/>→ logs/system.log"]
+    end
+
+    subgraph DOCKER_LAYER["Deployment Layer"]
+        DOCKERFILE["Dockerfile<br/>Base: python:3.11<br/>CMD: uvicorn api.main:app"]
+    end
+
+    subgraph RESEARCH_LAYER["Research Pipeline (Offline)"]
+        direction LR
+        P0C["phase0_cleaning.py"]
+        P0E["phase0_exploration.py"]
+        P1M["phase1_modeling.py"]
+        P1X["phase1_xgboost.py"]
+        P2U["phase2_uncertainty.py"]
+        P3E["phase3_explainability.py"]
+        P4O["phase4_outlier.py"]
+        P5R["phase5_reliability.py"]
+    end
+
+    subgraph DATA_LAYER["Data Sources"]
+        RAW_CSV["creditcard.csv<br/>(Kaggle – 284,807 rows, ~150 MB)"]
+        CLEAN_CSV["creditcard_phase0_clean.csv<br/>(~155 MB)"]
+        RESULTS_CSV["phase2_results.csv<br/>(~3.5 MB)"]
+    end
+
+    %% Client → API connections
+    STREAMLIT -->|"HTTP POST /predict<br/>(JSON)"| FASTAPI
+    SWAGGER -->|"HTTP"| FASTAPI
+    EXTERNAL_CLIENT -->|"HTTP"| FASTAPI
+
+    %% API internal routing
+    FASTAPI --> ROOT_ENDPOINT
+    FASTAPI --> PREDICT_ENDPOINT
+    PREDICT_ENDPOINT --> PYDANTIC
+    PYDANTIC -->|"np.array reshape(1,-1)"| ENGINE
+
+    %% Engine internals
+    ENGINE --> ENSEMBLE
+    ENSEMBLE --> PREDICT_PROBA
+    ENGINE --> ISOLATION
+    ISOLATION --> ANOMALY_SCORE
+    PREDICT_PROBA -->|"prob, uncertainty"| DECIDE
+    ANOMALY_SCORE -->|"novelty_flag"| DECIDE
+    DECIDE --> APPROVE
+    DECIDE --> STEP_UP
+    DECIDE --> ESCALATE
+    DECIDE --> DECLINE
+    DECIDE --> ABSTAIN
+    ENGINE --> COST
+    ENGINE --> TIER
+
+    %% Artifact loading
+    XGB_PKL -->|"joblib.load()"| ENSEMBLE
+    ISO_PKL -->|"joblib.load()"| ISOLATION
+
+    %% Research pipeline flow
+    RAW_CSV --> P0C
+    RAW_CSV --> P0E
+    P0C --> CLEAN_CSV
+    CLEAN_CSV --> P1M
+    CLEAN_CSV --> P1X
+    CLEAN_CSV --> P2U
+    CLEAN_CSV --> P3E
+    CLEAN_CSV --> P4O
+    CLEAN_CSV --> P5R
+    P2U -->|"saves"| XGB_PKL
+    P4O -->|"saves"| ISO_PKL
+    P2U --> RESULTS_CSV
+    RESULTS_CSV --> P3E
+
+    %% Docker
+    DOCKERFILE -->|"builds & runs"| FASTAPI

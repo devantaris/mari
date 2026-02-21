@@ -1,0 +1,72 @@
+Risk Aware Fraud Transaction Decision System/
+│
+├── .git/                                    [directory – Git repository metadata]
+├── .gitignore                               73 bytes
+├── Dockerfile                               230 bytes
+├── README.md                                4,027 bytes
+├── creditcard.csv                           150,828,752 bytes (~150 MB)
+├── creditcard_phase0_clean.csv              154,901,481 bytes (~155 MB)
+├── phase2_results.csv                       3,453,073 bytes (~3.5 MB)
+├── requirements.txt                         64 bytes
+│
+├── api/
+│   ├── __pycache__/
+│   │   └── main.cpython-311.pyc
+│   └── main.py                              864 bytes
+│
+├── artifacts/
+│   ├── isolation_forest.pkl                 1,803,497 bytes (~1.8 MB)
+│   └── xgb_ensemble.pkl                    6,803,689 bytes (~6.8 MB)
+│
+├── backend/
+│   ├── config/
+│   │   └── logger.py                        195 bytes
+│   ├── engine/
+│   │   ├── __pycache__/
+│   │   │   └── decision_engine.cpython-311.pyc
+│   │   └── decision_engine.py               6,229 bytes
+│   ├── models/                              [empty directory]
+│   └── test_engine.py                       1,225 bytes
+│
+├── frontend/
+│   └── app.py                               5,637 bytes
+│
+├── phase0_cleaning.py                       1,043 bytes
+├── phase0_exploration.py                    2,538 bytes
+├── phase1_modeling.py                       2,786 bytes
+├── phase1_xgboost.py                        3,385 bytes
+├── phase2_uncertainty.py                    4,528 bytes
+├── phase3_explainability.py                 2,615 bytes
+├── phase4_outlier.py                        3,020 bytes
+├── phase5_reliability.py                    2,623 bytes
+│
+└── venv/                                    [Python 3.11 virtual environment]
+    ├── Include/
+    ├── Lib/
+    │   └── site-packages/                   [All installed dependencies]
+    │       ├── fastapi/
+    │       ├── uvicorn/
+    │       ├── numpy/
+    │       ├── scikit-learn/ (sklearn)
+    │       ├── xgboost/
+    │       ├── joblib/
+    │       ├── pydantic/
+    │       ├── pandas/
+    │       ├── matplotlib/
+    │       ├── seaborn/
+    │       ├── shap/
+    │       ├── streamlit/
+    │       ├── requests/
+    │       └── [... additional transitive dependencies ...]
+    ├── Scripts/
+    │   ├── activate / activate.bat / Activate.ps1
+    │   ├── python.exe / pythonw.exe
+    │   ├── pip.exe / pip3.exe
+    │   ├── uvicorn.exe
+    │   ├── streamlit.exe
+    │   ├── fastapi.exe
+    │   └── [... other entry-point executables ...]
+    └── share/
+        └── jupyter/
+            └── nbextensions/
+                └── pydeck/

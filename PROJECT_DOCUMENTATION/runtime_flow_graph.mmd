@@ -1,0 +1,165 @@
+%%{init: {'theme': 'base'}}%%
+graph TB
+
+    subgraph ENTRY_POINTS["System Entry Points"]
+        EP1["uvicorn api.main:app<br/>(Production Entry)"]
+        EP2["python backend/test_engine.py<br/>(Smoke Test Entry)"]
+        EP3["streamlit run frontend/app.py<br/>(UI Entry)"]
+        EP4["python phase0_cleaning.py<br/>(Research Entry)"]
+        EP5["python phase0_exploration.py<br/>(Research Entry)"]
+        EP6["python phase1_modeling.py<br/>(Research Entry)"]
+        EP7["python phase1_xgboost.py<br/>(Research Entry)"]
+        EP8["python phase2_uncertainty.py<br/>(Research Entry)"]
+        EP9["python phase3_explainability.py<br/>(Research Entry)"]
+        EP10["python phase4_outlier.py<br/>(Research Entry)"]
+        EP11["python phase5_reliability.py<br/>(Research Entry)"]
+    end
+
+    subgraph STARTUP_FLOW["Application Startup Call Stack"]
+        S1["uvicorn loads api.main module"]
+        S2["sys.path.append(PROJECT_ROOT)"]
+        S3["from backend.engine.decision_engine import DecisionEngine"]
+        S4["engine = DecisionEngine()"]
+        S5["__init__: Resolve project_root via os.path"]
+        S6["__init__: joblib.load(xgb_ensemble.pkl)"]
+        S7["__init__: joblib.load(isolation_forest.pkl)"]
+        S8["__init__: Set thresholds<br/>(decline=0.80, escalate=0.60, auth=0.30,<br/>uncertainty=0.02, anomaly=-0.08)"]
+        S9["__init__: Set cost config<br/>(fraud=1000, review=20, false_pos=50)"]
+        S10["FastAPI app ready on 0.0.0.0:8000"]
+    end
+
+    subgraph PREDICT_FLOW["POST /predict – Full Call Stack"]
+        R1["predict(txn: TransactionInput)"]
+        R2["Validate: len(txn.features) == 31"]
+        R3["np.array(txn.features).reshape(1, -1)"]
+        R4["engine.evaluate_transaction(X)"]
+        
+        subgraph PREDICT_PROBA_FLOW["predict_proba(X) Call Stack"]
+            PP1["Initialize probs = empty list"]
+            PP2["Loop: for model in self.models (5x)"]
+            PP3["model.predict_proba(X)[:, 1]"]
+            PP4["probs.append(prob)"]
+            PP5["np.vstack(probs) → 5×1 array"]
+            PP6["mean_prob = np.mean(probs_arr)"]
+            PP7["std_prob = np.std(probs_arr)"]
+            PP8["Return (mean_prob, std_prob)"]
+        end
+        
+        subgraph ANOMALY_FLOW["anomaly_score(X) Call Stack"]
+            A1{"self.anomaly_model is None?"}
+            A2["Return (None, False)"]
+            A3["score = anomaly_model.decision_function(X)[0]"]
+            A4["novelty_flag = score > self.anomaly_threshold (-0.08)"]
+            A5["Return (score, novelty_flag)"]
+        end
+        
+        subgraph DECIDE_FLOW["decide(prob, uncertainty, novelty_flag) Call Stack"]
+            D1{"prob >= 0.80 AND<br/>uncertainty < 0.02?"}
+            D2["Return DECLINE"]
+            D3{"prob >= 0.60 AND<br/>uncertainty >= 0.02?"}
+            D4["Return ESCALATE_INVEST"]
+            D5{"0.30 <= prob < 0.80?"}
+            D6["Return STEP_UP_AUTH"]
+            D7{"prob < 0.30 AND<br/>uncertainty >= 0.02?"}
+            D8["Return ABSTAIN"]
+            D9{"novelty_flag is True?"}
+            D10["Return ESCALATE_INVEST"]
+            D11["Return APPROVE"]
+        end
+        
+        subgraph COST_FLOW["estimate_cost(prob, decision) Call Stack"]
+            C1["expected_loss = prob × 1000"]
+            C2{"decision in<br/>[STEP_UP_AUTH, ESCALATE_INVEST, ABSTAIN]?"}
+            C3["manual_cost = 20.0"]
+            C4["manual_cost = 0.0"]
+            C5["net_utility = -expected_loss - manual_cost"]
+            C6["Return (expected_loss, manual_cost, net_utility)"]
+        end
+        
+        subgraph TIER_FLOW["tier(prob) Call Stack"]
+            T1{"prob >= 0.80?"}
+            T2["Return high_risk"]
+            T3{"prob >= 0.30?"}
+            T4["Return medium_risk"]
+            T5["Return low_risk"]
+        end
+        
+        R5["Assemble result dict with:<br/>decision, risk_score, uncertainty,<br/>novelty_flag, tier, costs,<br/>explanations, meta"]
+        R6["Return JSON response"]
+    end
+
+    subgraph STREAMLIT_FLOW["Streamlit Runtime Flow"]
+        ST1["st.set_page_config(layout=wide)"]
+        ST2["st.title + st.markdown"]
+        ST3["st.columns([1,2])"]
+        ST4["Left panel: 5 routing buttons"]
+        ST5["User clicks button"]
+        ST6["generate_for_decision(target, max_attempts=500)"]
+        ST7["Loop: generate_random_transaction()"]
+        ST8["time = uniform(0, 172800)"]
+        ST9["amount = uniform(1, 5000)"]
+        ST10["pca_features = normal(0, 1, 28)"]
+        ST11["Assemble 31-element feature list"]
+        ST12["call_model(features)"]
+        ST13["requests.post(localhost:8000/predict)"]
+        ST14["Check: payload.decision == target?"]
+        ST15["Store in session_state"]
+        ST16["Right panel: Render all sections"]
+    end
+
+    %% Startup flow
+    EP1 --> S1 --> S2 --> S3 --> S4 --> S5 --> S6 --> S7 --> S8 --> S9 --> S10
+
+    %% Predict flow
+    S10 -.->|"incoming request"| R1
+    R1 --> R2
+    R2 -->|"invalid"| R6
+    R2 -->|"valid"| R3 --> R4
+
+    R4 --> PP1 --> PP2 --> PP3 --> PP4 --> PP5 --> PP6 --> PP7 --> PP8
+
+    R4 --> A1
+    A1 -->|"Yes"| A2
+    A1 -->|"No"| A3 --> A4 --> A5
+
+    PP8 --> D1
+    D1 -->|"Yes"| D2
+    D1 -->|"No"| D3
+    D3 -->|"Yes"| D4
+    D3 -->|"No"| D5
+    D5 -->|"Yes"| D6
+    D5 -->|"No"| D7
+    D7 -->|"Yes"| D8
+    D7 -->|"No"| D9
+    D9 -->|"Yes"| D10
+    D9 -->|"No"| D11
+
+    D2 --> C1
+    D4 --> C1
+    D6 --> C1
+    D8 --> C1
+    D10 --> C1
+    D11 --> C1
+    C1 --> C2
+    C2 -->|"Yes"| C3
+    C2 -->|"No"| C4
+    C3 --> C5
+    C4 --> C5
+    C5 --> C6
+
+    C6 --> T1
+    T1 -->|"Yes"| T2
+    T1 -->|"No"| T3
+    T3 -->|"Yes"| T4
+    T3 -->|"No"| T5
+
+    T2 --> R5
+    T4 --> R5
+    T5 --> R5
+    R5 --> R6
+
+    %% Streamlit flow
+    EP3 --> ST1 --> ST2 --> ST3 --> ST4 --> ST5 --> ST6 --> ST7
+    ST7 --> ST8 --> ST9 --> ST10 --> ST11 --> ST12 --> ST13 --> ST14
+    ST14 -->|"No match"| ST7
+    ST14 -->|"Match"| ST15 --> ST16

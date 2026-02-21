@@ -1,0 +1,174 @@
+%%{init: {'theme': 'base'}}%%
+graph TB
+
+    subgraph INTERNAL_MODULES["Internal Module Dependencies"]
+        direction TB
+        
+        API_MAIN["api/main.py"]
+        DECISION_ENGINE["backend/engine/decision_engine.py"]
+        LOGGER["backend/config/logger.py"]
+        TEST_ENGINE["backend/test_engine.py"]
+        FRONTEND_APP["frontend/app.py"]
+        
+        P0C["phase0_cleaning.py"]
+        P0E["phase0_exploration.py"]
+        P1M["phase1_modeling.py"]
+        P1X["phase1_xgboost.py"]
+        P2U["phase2_uncertainty.py"]
+        P3E["phase3_explainability.py"]
+        P4O["phase4_outlier.py"]
+        P5R["phase5_reliability.py"]
+    end
+
+    subgraph EXTERNAL_PACKAGES["External Package Dependencies"]
+        direction TB
+        
+        subgraph CORE_DEPS["Core Runtime Dependencies (requirements.txt)"]
+            FASTAPI_PKG["fastapi"]
+            UVICORN_PKG["uvicorn"]
+            NUMPY_PKG["numpy"]
+            SKLEARN_PKG["scikit-learn"]
+            XGBOOST_PKG["xgboost"]
+            JOBLIB_PKG["joblib"]
+            PYDANTIC_PKG["pydantic"]
+        end
+
+        subgraph RESEARCH_DEPS["Research-Only Dependencies (installed in venv)"]
+            PANDAS_PKG["pandas"]
+            MATPLOTLIB_PKG["matplotlib"]
+            SEABORN_PKG["seaborn"]
+            SHAP_PKG["shap"]
+        end
+
+        subgraph FRONTEND_DEPS["Frontend Dependencies (installed in venv)"]
+            STREAMLIT_PKG["streamlit"]
+            REQUESTS_PKG["requests"]
+        end
+    end
+
+    subgraph SERIALIZED_ARTIFACTS["Serialized Artifacts (Cross-Phase Dependencies)"]
+        XGB_ARTIFACT["artifacts/xgb_ensemble.pkl"]
+        ISO_ARTIFACT["artifacts/isolation_forest.pkl"]
+        CLEAN_CSV_ARTIFACT["creditcard_phase0_clean.csv"]
+        RESULTS_CSV_ARTIFACT["phase2_results.csv"]
+    end
+
+    %% ==============================
+    %% api/main.py dependencies
+    %% ==============================
+    API_MAIN -->|"from fastapi import FastAPI"| FASTAPI_PKG
+    API_MAIN -->|"from pydantic import BaseModel"| PYDANTIC_PKG
+    API_MAIN -->|"import numpy as np"| NUMPY_PKG
+    API_MAIN -->|"import sys, os"| STDLIB["Python stdlib (sys, os)"]
+    API_MAIN -->|"from backend.engine.decision_engine import DecisionEngine"| DECISION_ENGINE
+
+    %% ==============================
+    %% decision_engine.py dependencies
+    %% ==============================
+    DECISION_ENGINE -->|"import joblib"| JOBLIB_PKG
+    DECISION_ENGINE -->|"import numpy as np"| NUMPY_PKG
+    DECISION_ENGINE -->|"import os, datetime, typing"| STDLIB
+    DECISION_ENGINE -->|"joblib.load()"| XGB_ARTIFACT
+    DECISION_ENGINE -->|"joblib.load()"| ISO_ARTIFACT
+
+    %% ==============================
+    %% logger.py dependencies
+    %% ==============================
+    LOGGER -->|"import logging"| STDLIB
+
+    %% ==============================
+    %% test_engine.py dependencies
+    %% ==============================
+    TEST_ENGINE -->|"import json, os, sys"| STDLIB
+    TEST_ENGINE -->|"import numpy as np"| NUMPY_PKG
+    TEST_ENGINE -->|"from backend.engine.decision_engine import DecisionEngine"| DECISION_ENGINE
+
+    %% ==============================
+    %% frontend/app.py dependencies
+    %% ==============================
+    FRONTEND_APP -->|"import streamlit as st"| STREAMLIT_PKG
+    FRONTEND_APP -->|"import requests"| REQUESTS_PKG
+    FRONTEND_APP -->|"import numpy as np"| NUMPY_PKG
+
+    %% ==============================
+    %% Research script dependencies
+    %% ==============================
+    P0C -->|"import pandas"| PANDAS_PKG
+    P0C -->|"import numpy"| NUMPY_PKG
+
+    P0E -->|"import pandas"| PANDAS_PKG
+    P0E -->|"import numpy"| NUMPY_PKG
+    P0E -->|"import matplotlib"| MATPLOTLIB_PKG
+    P0E -->|"import seaborn"| SEABORN_PKG
+
+    P1M -->|"import pandas"| PANDAS_PKG
+    P1M -->|"import numpy"| NUMPY_PKG
+    P1M -->|"import matplotlib"| MATPLOTLIB_PKG
+    P1M -->|"import seaborn"| SEABORN_PKG
+    P1M -->|"import sklearn"| SKLEARN_PKG
+
+    P1X -->|"import pandas"| PANDAS_PKG
+    P1X -->|"import numpy"| NUMPY_PKG
+    P1X -->|"import matplotlib"| MATPLOTLIB_PKG
+    P1X -->|"import xgboost"| XGBOOST_PKG
+    P1X -->|"import sklearn"| SKLEARN_PKG
+
+    P2U -->|"import pandas"| PANDAS_PKG
+    P2U -->|"import numpy"| NUMPY_PKG
+    P2U -->|"import joblib"| JOBLIB_PKG
+    P2U -->|"import xgboost"| XGBOOST_PKG
+    P2U -->|"import sklearn"| SKLEARN_PKG
+
+    P3E -->|"import pandas"| PANDAS_PKG
+    P3E -->|"import numpy"| NUMPY_PKG
+    P3E -->|"import shap"| SHAP_PKG
+    P3E -->|"import matplotlib"| MATPLOTLIB_PKG
+    P3E -->|"import xgboost"| XGBOOST_PKG
+    P3E -->|"import sklearn"| SKLEARN_PKG
+
+    P4O -->|"import pandas"| PANDAS_PKG
+    P4O -->|"import numpy"| NUMPY_PKG
+    P4O -->|"import matplotlib"| MATPLOTLIB_PKG
+    P4O -->|"import joblib"| JOBLIB_PKG
+    P4O -->|"import sklearn"| SKLEARN_PKG
+
+    P5R -->|"import pandas"| PANDAS_PKG
+    P5R -->|"import numpy"| NUMPY_PKG
+    P5R -->|"import matplotlib"| MATPLOTLIB_PKG
+    P5R -->|"import xgboost"| XGBOOST_PKG
+    P5R -->|"import sklearn"| SKLEARN_PKG
+
+    %% ==============================
+    %% Artifact dependencies (cross-phase)
+    %% ==============================
+    P0C -.->|"produces"| CLEAN_CSV_ARTIFACT
+    CLEAN_CSV_ARTIFACT -.->|"consumed by"| P1M
+    CLEAN_CSV_ARTIFACT -.->|"consumed by"| P1X
+    CLEAN_CSV_ARTIFACT -.->|"consumed by"| P2U
+    CLEAN_CSV_ARTIFACT -.->|"consumed by"| P3E
+    CLEAN_CSV_ARTIFACT -.->|"consumed by"| P4O
+    CLEAN_CSV_ARTIFACT -.->|"consumed by"| P5R
+
+    P2U -.->|"produces"| XGB_ARTIFACT
+    P2U -.->|"produces"| RESULTS_CSV_ARTIFACT
+    P4O -.->|"produces"| ISO_ARTIFACT
+    RESULTS_CSV_ARTIFACT -.->|"consumed by"| P3E
+
+    %% ==============================
+    %% CIRCULAR DEPENDENCY CHECK
+    %% ==============================
+    %% NOTE: No circular dependencies detected.
+    %% All internal imports are unidirectional:
+    %%   api/main.py → decision_engine.py
+    %%   test_engine.py → decision_engine.py
+    %% No module imports its importer.
+
+    %% ==============================
+    %% CROSS-LAYER COUPLING NOTES
+    %% ==============================
+    %% 1. api/main.py directly couples to backend/engine/decision_engine.py
+    %%    via sys.path manipulation (not a package-level import)
+    %% 2. frontend/app.py couples to api/main.py only via HTTP (loose coupling)
+    %% 3. logger.py is defined but NOT imported by any production module
+    %%    (DEAD MODULE – see PROJECT_BIBLE.md)
+    %% 4. backend/models/ directory exists but is EMPTY (placeholder)

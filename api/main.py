@@ -14,24 +14,26 @@ from backend.engine.decision_engine import DecisionEngine
 app = FastAPI(title="Risk-Aware Fraud Decision API")
 
 # ── CORS ──────────────────────────────────────────────────────────────────
-# In production, set ALLOWED_ORIGINS to your Vercel deployment URL.
-# Example: ALLOWED_ORIGINS=https://your-app.vercel.app
-# For local development, defaults to allow all origins.
-_raw_origins = os.environ.get("ALLOWED_ORIGINS", "*")
-if _raw_origins == "*":
-    allow_origins = ["*"]
-else:
-    allow_origins = [o.strip() for o in _raw_origins.split(",")]
+# ALLOWED_ORIGINS: comma-separated exact origins from Railway env var.
+# allow_origin_regex always permits any *.vercel.app URL (production + preview)
+# and localhost for local development.
+_raw = os.environ.get("ALLOWED_ORIGINS", "")
+_explicit = [o.strip() for o in _raw.split(",") if o.strip()] or ["*"]
 
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=allow_origins,
+    allow_origins=_explicit,
+    allow_origin_regex=(
+        r"https://[a-zA-Z0-9\-]+\.vercel\.app"
+        r"|https?://localhost(:\d+)?"
+        r"|https?://127\.0\.0\.1(:\d+)?"
+    ),
     allow_credentials=False,
-    allow_methods=["GET", "POST"],
+    allow_methods=["GET", "POST", "OPTIONS"],
     allow_headers=["*"],
 )
 
-# ── Engine (loaded once at startup, not per request) ──────────────────────
+# ── Engine (loaded once at startup) ───────────────────────────────────────
 engine = DecisionEngine()
 
 

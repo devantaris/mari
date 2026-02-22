@@ -6,9 +6,10 @@
 import { initLandscape, plotTransaction, clearHistory } from './landscape.js';
 
 // ---- Config ----
-// In production, always points to Railway. In dev, VITE_API_URL overrides this.
-const API_BASE = import.meta.env.VITE_API_URL || 'https://risk-aware-fraud-detection-production.up.railway.app';
-const API_URL = `${API_BASE}/predict`;
+// In production (Vercel): /api/predict → Vercel serverless fn → Railway (server-to-server, no CORS)
+// In development (npm run dev): /api/predict → Vite proxy → localhost:8000/predict
+const API_BASE = import.meta.env.VITE_API_URL || '';
+const API_URL = `${API_BASE}/api/predict`;
 
 
 // ---- Decision Metadata ----

@@ -21,8 +21,8 @@
   <header class="app-header">
     <div class="header-left">
       <div class="header-title-block">
-        <h1 class="logo">Multi-Axis Risk Intelligence</h1>
-        <p class="tagline">MARI</p>
+        <h1 class="logo">Risk-Aware Fraud Decision System</h1>
+        <p class="tagline">Risk × Uncertainty × Novelty - Transaction X-Ray</p>
       </div>
     </div>
     <div class="header-right">
@@ -69,7 +69,7 @@
   <section class="info-strip" id="aboutSection">
     <div class="info-strip-inner">
       <div class="tab-header">
-        <button class="tab-btn" data-tab="technical" id="tabTechnical">System Overview (Technical)</button>
+        <button class="tab-btn active" data-tab="technical" id="tabTechnical">System Overview (Technical)</button>
         <button class="tab-btn" data-tab="simple" id="tabSimple">What This Means (Simple)</button>
         <button class="tab-btn" data-tab="intended" id="tabIntended">Intended Use</button>
         <button class="tab-btn" data-tab="howto" id="tabHowto">How to Use</button>
@@ -77,7 +77,7 @@
       </div>
 
       <!-- Tab 1: Technical -->
-      <div class="tab-content" id="contentTechnical">
+      <div class="tab-content active" id="contentTechnical">
         <div class="info-grid">
           <div class="info-item">
             <span class="info-label">Dataset</span>
@@ -187,19 +187,6 @@
     </div>
   </section>
 
-  <!-- ===== DOCS CTA STRIP ===== -->
-  <div class="docs-cta-strip">
-    <a href="/docs.html" target="_blank" rel="noopener" class="docs-cta-inner" id="docsCta">
-      <span class="docs-cta-icon">📖</span>
-      <div class="docs-cta-text">
-        <span class="docs-cta-title">Project Bible &amp; Full Documentation</span>
-        <span class="docs-cta-sub">Architecture · Metrics · Sequence Diagrams · Dependency Graphs · Full Technical
-          Breakdown</span>
-      </div>
-      <span class="docs-cta-arrow">Explore →</span>
-    </a>
-  </div>
-
   <!-- ===== MAIN LAYOUT ===== -->
   <main class="app-main">
 
@@ -210,7 +197,6 @@
 
         <button class="btn btn-primary btn-generate" id="btnGenerate">
           <span class="btn-icon">⚡</span> Generate Random
-          <span class="last-result-badge" id="lastResultBadge"></span>
         </button>
 
         <div class="divider"><span>or try a preset</span></div>
@@ -429,7 +415,18 @@
         <span class="legend-item"><span class="legend-dot dot-decline"></span>Decline</span>
       </div>
 
-
+      <!-- Meta Info -->
+      <div class="meta-section" id="metaSection">
+        <h3 class="meta-title">Engine Metadata</h3>
+        <div class="meta-grid" id="metaGrid">
+          <span class="meta-label">Model</span>
+          <span class="meta-value mono" id="metaModel">—</span>
+          <span class="meta-label">Method</span>
+          <span class="meta-value mono" id="metaMethod">—</span>
+          <span class="meta-label">Timestamp</span>
+          <span class="meta-value mono" id="metaTimestamp">—</span>
+        </div>
+      </div>
     </aside>
 
   </main>

@@ -6,11 +6,8 @@
 import { initLandscape, plotTransaction, clearHistory } from './landscape.js';
 
 // ---- Config ----
-// In production (Vercel): /api/predict → Vercel serverless fn → Railway (server-to-server, no CORS)
-// In development (npm run dev): /api/predict → Vite proxy → localhost:8000/predict
-const API_BASE = import.meta.env.VITE_API_URL || '';
-const API_URL = `${API_BASE}/api/predict`;
-
+const API_URL = '/api/predict';
+const DIRECT_API_URL = 'http://localhost:8000/predict';
 
 // ---- Decision Metadata ----
 const DECISION_META = {
@@ -136,39 +133,41 @@ function formatTime(seconds) {
 // ---- API ----
 
 async function callAPI(features) {
-    try {
-        const res = await fetch(API_URL, {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ features }),
-        });
-        if (!res.ok) {
-            // Server responded but with an error status
-            let detail = `HTTP ${res.status}`;
-            try { const d = await res.json(); detail = d.detail || d.error || detail; } catch { }
-            throw new Error(`SERVER_ERROR: ${detail}`);
+    // Try proxy first (Vite dev), fall back to direct
+    let lastErr;
+    for (const url of [API_URL, DIRECT_API_URL]) {
+        try {
+            const res = await fetch(url, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ features }),
+            });
+            if (!res.ok) { lastErr = new Error(`HTTP ${res.status}`); continue; }
+            const data = await res.json();
+            if (data.error) throw new Error(data.error);
+            return data.result || data;
+        } catch (e) {
+            lastErr = e;
+            continue;
         }
-        const data = await res.json();
-        if (data.error) throw new Error(data.error);
-        return data.result || data;
-    } catch (e) {
-        console.error('[callAPI] Error:', e.message, '| URL:', API_URL);
-        throw e;
     }
+    throw lastErr || new Error('API not reachable');
 }
 
 async function checkHealth() {
     const status = $('#apiStatus');
-    const healthUrl = `${API_BASE}/health`;
-    try {
-        const res = await fetch(healthUrl, { signal: AbortSignal.timeout(5000) });
-        if (res.ok) {
-            status.className = 'status-indicator online';
-            status.querySelector('.status-text').textContent = 'API Connected';
-            return true;
+    // Try proxy first (avoids CORS), then direct
+    for (const url of ['/api/', 'http://localhost:8000/']) {
+        try {
+            const res = await fetch(url, { signal: AbortSignal.timeout(3000) });
+            if (res.ok) {
+                status.className = 'status-indicator online';
+                status.querySelector('.status-text').textContent = 'API Connected';
+                return true;
+            }
+        } catch {
+            continue;
         }
-    } catch {
-        // fall through
     }
     status.className = 'status-indicator offline';
     status.querySelector('.status-text').textContent = 'API Offline';
@@ -309,24 +308,6 @@ function renderAnalysis(features, payload) {
     // Plot on landscape
     plotTransaction(risk, uncertainty, decision);
 
-    // Update last-result badge on Generate button
-    const badge = $('#lastResultBadge');
-    if (badge) {
-        const BADGE_COLORS = {
-            APPROVE: '#34d399', ABSTAIN: '#a78bfa', STEP_UP_AUTH: '#fbbf24',
-            ESCALATE_INVEST: '#fb923c', DECLINE: '#f87171'
-        };
-        const shortLabel = {
-            APPROVE: 'APPROVE', ABSTAIN: 'ABSTAIN', STEP_UP_AUTH: 'STEP-UP',
-            ESCALATE_INVEST: 'ESCALATE', DECLINE: 'DECLINE'
-        }[decision] || decision;
-        badge.textContent = shortLabel;
-        badge.style.background = (BADGE_COLORS[decision] || '#818cf8') + '33';
-        badge.style.color = BADGE_COLORS[decision] || '#818cf8';
-        badge.style.border = `1px solid ${(BADGE_COLORS[decision] || '#818cf8')}55`;
-        badge.classList.add('visible');
-    }
-
     // Animate layers sequentially
     animateLayers();
 
@@ -448,20 +429,16 @@ async function handleGenerate(features, isPreset = false, presetName = null) {
         renderAnalysis(features, payload);
     } catch (err) {
         showState('empty');
+        // Show inline error
         const empty = $('#emptyState');
-        const msg = err?.message || '';
-        const isCors = err instanceof TypeError;
-        const isServer = msg.startsWith('SERVER_ERROR:');
-        empty.querySelector('h2').textContent = isCors ? 'CORS / Network Error' : isServer ? 'Backend Error' : 'Connection Error';
-        const detail = isServer ? msg.replace('SERVER_ERROR: ', '') : isCors ? 'Browser blocked the request (CORS). Check console.' : msg;
-        const target = API_BASE || 'the backend';
+        empty.querySelector('h2').textContent = 'Connection Error';
         empty.querySelector('p').innerHTML =
-            `<code>${detail}</code><br/><small>Endpoint: ${target}/predict — check browser console (F12) for details.</small>`;
+            `Could not reach the API at <code>localhost:8000</code>.<br/>Make sure the FastAPI backend is running.`;
         setTimeout(() => {
             empty.querySelector('h2').textContent = 'Transaction X-Ray';
             empty.querySelector('p').innerHTML =
                 'Generate or select a transaction to see it pass through<br/>the three detection layers.';
-        }, 8000);
+        }, 5000);
     } finally {
         isAnalyzing = false;
         // Reset loading text for next use
@@ -515,34 +492,19 @@ function init() {
     // Theme toggle
     $('#themeToggle').addEventListener('click', toggleTheme);
 
-    // Tab hover-reveal for about section
-    const tabCloseTimers = {};
+    // Tab switching for about section
     $$('.tab-btn').forEach(btn => {
-        const tab = btn.dataset.tab;
-        const contentId = 'content' + tab.charAt(0).toUpperCase() + tab.slice(1);
-        const content = document.getElementById(contentId);
-        if (!content) return;
-
-        const openTab = () => {
-            clearTimeout(tabCloseTimers[tab]);
-            // Close all others
+        btn.addEventListener('click', () => {
+            const tab = btn.dataset.tab;
+            // Deactivate all tabs and contents
             $$('.tab-btn').forEach(b => b.classList.remove('active'));
             $$('.tab-content').forEach(c => c.classList.remove('active'));
+            // Activate clicked tab
             btn.classList.add('active');
-            content.classList.add('active');
-        };
-
-        const closeTab = () => {
-            tabCloseTimers[tab] = setTimeout(() => {
-                btn.classList.remove('active');
-                content.classList.remove('active');
-            }, 120); // small delay so mouse can reach content panel
-        };
-
-        btn.addEventListener('mouseenter', openTab);
-        btn.addEventListener('mouseleave', closeTab);
-        content.addEventListener('mouseenter', () => clearTimeout(tabCloseTimers[tab]));
-        content.addEventListener('mouseleave', closeTab);
+            const contentId = 'content' + tab.charAt(0).toUpperCase() + tab.slice(1);
+            const content = document.getElementById(contentId);
+            if (content) content.classList.add('active');
+        });
     });
 
     // Handle window resize for canvas

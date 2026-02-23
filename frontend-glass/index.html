@@ -77,7 +77,7 @@
       </div>
 
       <!-- Tab 1: Technical -->
-      <div class="tab-content active" id="contentTechnical">
+      <div class="tab-content" id="contentTechnical">
         <div class="info-grid">
           <div class="info-item">
             <span class="info-label">Dataset</span>
@@ -185,6 +185,15 @@
         </div>
       </div>
     </div>
+  </section>
+
+  <!-- ===== DOCS TRIGGER SECTION ===== -->
+  <section class="docs-trigger-section">
+    <button id="btnOpenDocs" class="btn-open-docs">
+      <span class="docs-btn-icon">&#128196;</span>
+      Full Project Documentation &amp; Architecture
+      <span class="docs-btn-arrow">&#8599;</span>
+    </button>
   </section>
 
   <!-- ===== MAIN LAYOUT ===== -->
@@ -454,7 +463,17 @@
     </div>
   </footer>
 
+  <!-- ===== DOCS MODAL ===== -->
+  <div class="docs-modal" id="docsModal">
+    <div class="docs-modal-overlay" id="docsOverlay"></div>
+    <div class="docs-modal-frame">
+      <button class="docs-modal-close" id="docsClose" aria-label="Close documentation">&#10005;</button>
+      <iframe src="/docs.html" class="docs-iframe" title="Project Documentation"></iframe>
+    </div>
+  </div>
+
   <script type="module" src="/main.js"></script>
+
 </body>
 
 </html>

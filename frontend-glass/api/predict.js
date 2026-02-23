@@ -1,7 +1,7 @@
 // Vercel serverless function — proxies POST /api/predict → Railway backend
 // No CORS issues: browser calls same-origin Vercel, Vercel calls Railway server-to-server.
 
-const RAILWAY_URL = 'https://risk-aware-fraud-detection-production.up.railway.app/predict';
+const RAILWAY_URL = 'https://mari-production-40ce.up.railway.app/predict';
 
 export default async function handler(req, res) {
     if (req.method !== 'POST') {

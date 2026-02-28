@@ -201,12 +201,15 @@ function renderAnalysis(features, payload) {
     if (tier === 'high_risk') {
         riskProg.style.background = `linear-gradient(90deg, var(--color-stepup), var(--color-decline))`;
         riskProg.style.color = 'var(--color-decline)';
+        riskProg.style.boxShadow = '0 0 15px var(--color-decline)';
     } else if (tier === 'medium_risk') {
         riskProg.style.background = `linear-gradient(90deg, var(--color-approve), var(--color-stepup))`;
         riskProg.style.color = 'var(--color-stepup)';
+        riskProg.style.boxShadow = '0 0 15px var(--color-stepup)';
     } else {
-        riskProg.style.background = `linear-gradient(90deg, #6366f1, var(--color-approve))`;
+        riskProg.style.background = `linear-gradient(90deg, var(--color-primary), var(--color-approve))`;
         riskProg.style.color = 'var(--color-approve)';
+        riskProg.style.boxShadow = '0 0 15px var(--color-approve)';
     }
 
     // Tier badge
@@ -240,11 +243,14 @@ function renderAnalysis(features, payload) {
 
         // Color based on individual probability
         if (simulated > 0.6) {
-            bar.style.background = `linear-gradient(to top, rgba(248, 113, 113, 0.3), rgba(248, 113, 113, 0.7))`;
+            bar.style.background = `linear-gradient(to top, transparent, var(--color-decline))`;
+            bar.style.boxShadow = `0 -5px 10px rgba(255, 0, 51, 0.4)`;
         } else if (simulated > 0.3) {
-            bar.style.background = `linear-gradient(to top, rgba(251, 191, 36, 0.3), rgba(251, 191, 36, 0.7))`;
+            bar.style.background = `linear-gradient(to top, transparent, var(--color-stepup))`;
+            bar.style.boxShadow = `0 -5px 10px rgba(255, 170, 0, 0.4)`;
         } else {
-            bar.style.background = `linear-gradient(to top, rgba(99, 102, 241, 0.3), rgba(99, 102, 241, 0.7))`;
+            bar.style.background = `linear-gradient(to top, transparent, var(--color-primary))`;
+            bar.style.boxShadow = `0 -5px 10px rgba(0, 229, 255, 0.4)`;
         }
     }
 

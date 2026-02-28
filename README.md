@@ -1,106 +1,71 @@
-# Risk-Aware Financial Transaction Decision System
+# 🌌 Glass Lens: Risk-Aware Fraud Decision Engine
 
-A production-grade fraud detection and decision intelligence engine combining ensemble machine learning, predictive uncertainty, novelty detection, and cost-aware routing — deployed as a Dockerized FastAPI service.
+> A production-grade decision intelligence system combining ensemble ML, epistemic uncertainty, and novelty detection into a unified, cost-aware routing architecture.
 
 ## 🚀 Overview
 
-This project moves beyond binary fraud classification.
+Traditional fraud systems treat transactions as a binary `APPROVE` or `DECLINE`, ignoring the nuance of model confidence. **Glass Lens** changes this paradigm by evaluating transactions across three dimensions:
 
-It implements a risk-aware financial decision engine that integrates:
+1. **Risk Score:** Consensus probability from a 5-model Bootstrap XGBoost Ensemble.
+2. **Predictive Uncertainty:** Standard deviation across the ensemble (epistemic disagreement).
+3. **Novelty Detection:** Isolation Forest identifying unseen anomalous behavior.
 
-- Bootstrap XGBoost ensemble modeling
-- Predictive uncertainty estimation (epistemic)
-- Isolation Forest novelty detection
-- Two-axis routing logic (Risk × Uncertainty)
-- Cost-aware decision optimization
-- 5-state fraud control architecture
-- Containerized REST API deployment
+These metrics feed into a cost-aware engine that routes transactions into **5 distinct states**, optimizing for financial outcome and minimizing false positives.
 
-The system is designed as a deployable backend service, not just a research notebook.
+---
 
-## 🧠 System Architecture
+## 🧠 5-State Decision Architecture
 
+The engine dynamically routes traffic based on the Risk × Uncertainty matrix:
+
+| Decision | Trigger Condition | Action |
+| :--- | :--- | :--- |
+| `APPROVE` | Low Risk + Low Uncertainty | Auto-approve transaction. |
+| `STEP_UP_AUTH` | Medium Risk | Require 2FA / Biometric verification. |
+| `ESCALATE_INVEST` | High Risk + High Uncertainty *or* Novel Pattern | Route to human fraud analyst. |
+| `DECLINE` | High Risk + Low Uncertainty | Auto-block transaction. |
+| `ABSTAIN` | Low Risk + High Uncertainty | Defer decision due to model disagreement. |
+
+---
+
+## ⚙️ Technical Stack
+
+- **Backend (API Engine):** FastAPI, Python 3.11, Scikit-Learn, XGBoost
+- **Frontend (Glass UI):** Vanilla JS, Canvas API, Vite (Cosmic / Terminal Aesthetic)
+- **Deployment:** Docker, Railway (Backend), Vercel (Frontend)
+
+---
+
+## 💻 Local Development
+
+### 1. Backend (Dockerized API)
+```bash
+docker build -t fraud-api .
+docker run -p 8000:8000 fraud-api
 ```
-Client / UI
-      ↓
-FastAPI API Layer (/predict)
-      ↓
-DecisionEngine
-      ├── XGBoost Bootstrap Ensemble
-      ├── Ensemble Std (Uncertainty)
-      ├── Isolation Forest (Novelty Layer)
-      ├── Cost Simulation Layer
-      └── 5-State Routing Logic
-              • APPROVE
-              • STEP_UP_AUTH
-              • ESCALATE_INVEST
-              • DECLINE
-              • ABSTAIN
-```
+*Swagger UI available at: `http://localhost:8000/docs`*
 
-## 📊 Decision Framework (2-Axis Logic)
-
-The system makes decisions using two dimensions:
-
-- **Risk Score** → Mean probability from ensemble
-- **Uncertainty** → Standard deviation across bootstrap models
-
-### Routing Strategy
-
-| Risk Level | Uncertainty | Decision           |
-|------------|-------------|--------------------|
-| High       | Low         | DECLINE            |
-| High       | High        | ESCALATE_INVEST    |
-| Medium     | Any         | STEP_UP_AUTH       |
-| Low        | High        | ABSTAIN            |
-| Low        | Low         | APPROVE            |
-
-Isolation Forest can override to ESCALATE_INVEST if novel behavior is detected.
-
-## 🔬 Model Validation
-
-- ROC-AUC ≈ 0.986
-- Reliability curve verified calibration
-- Brier score improved post-calibration
-- Bootstrap uncertainty validated
-- Cost-based threshold optimization tested
-- SHAP explainability implemented during research phase
-
-## 🏗 Project Structure
-
-```
-backend/
-    engine/
-        decision_engine.py
-    config/
-
-api/
-    main.py
-
-artifacts/
-    xgb_ensemble.pkl
-    isolation_forest.pkl
-
-Dockerfile
-requirements.txt
+### 2. Frontend (Glass UI)
+```bash
+cd frontend-glass
+npm install
+npm run dev
 ```
 
-Research phase scripts are preserved separately and remain untouched.
+---
 
-## 🔌 API Usage
+## 🔌 API Integration
 
-### POST /predict
+**POST `/predict`**
 
-**Request body:**
-
+*Request:*
 ```json
 {
-  "features": [ ... 31 numerical features ... ]
+  "features": [0.1, -1.2, 3.4 /* ... 31 numerical features total */ ]
 }
 ```
 
-**Example response:**
-
+*Response:*
 ```json
 {
   "decision": "STEP_UP_AUTH",
@@ -116,114 +81,9 @@ Research phase scripts are preserved separately and remain untouched.
 }
 ```
 
-**Swagger UI available at:**
-
-http://localhost:8000/docs
-
-## 🐳 Running Locally (Docker)
-
-**Build the image:**
-
-```bash
-docker build -t fraud-api .
-```
-
-**Run the container:**
-
-```bash
-docker run -p 8000:8000 fraud-api
-```
-
-**Access API:**
-
-http://localhost:8000/docs
-
-## 🎯 Key Contributions
-
-- Ensemble-based fraud probability estimation
-- Uncertainty-aware routing
-- Novelty detection layer for unseen behavior
-- Cost-sensitive decision modeling
-- Production-ready REST API
-- Fully Dockerized deployment pipeline
-
-## 📦 Dataset
-
-- Kaggle Credit Card Fraud Detection Dataset
-- 284,807 transactions
-- 0.172% fraud rate
-- Severe class imbalance
-
-## 🔮 Future Extensions
-
-- Live monitoring endpoint
-- Threshold auto-optimization via expected utility
-- Zone-specific uncertainty thresholds
-- Real-time transaction streaming
-- Public cloud deployment
-
-## 🏁 Status
-
-- ✅ Research validated
-- ✅ Production inference engine
-- ✅ FastAPI wrapper
-- ✅ Dockerized backend
-- ✅ Cloud deployment: Vercel (frontend) + Railway (backend)
-
 ---
 
-## ☁️ Cloud Deployment (Vercel + Railway)
+## ☁️ Cloud Deployment
 
-The Glass Lens frontend is deployed to **Vercel** (static CDN).  
-The FastAPI backend is deployed to **Railway** (Docker container).
-
-### Environment Variables
-
-| Variable | Where | Value |
-|----------|-------|-------|
-| `VITE_API_URL` | Vercel dashboard | Your Railway backend URL, e.g. `https://your-app.up.railway.app` |
-| `ALLOWED_ORIGINS` | Railway dashboard | Your Vercel URL, e.g. `https://your-app.vercel.app` |
-| `PORT` | Railway (auto-injected) | Railway sets this automatically |
-
----
-
-### Step 1 — Deploy Backend to Railway
-
-1. Push this repo to GitHub (if not already).
-2. Go to [railway.app](https://railway.app) → **New Project** → **Deploy from GitHub repo**.
-3. Select this repository. Railway auto-detects the `Dockerfile`.
-4. In **Variables**, add:
-   ```
-   ALLOWED_ORIGINS=https://your-vercel-app.vercel.app
-   ```
-   *(You can update this after you get the Vercel URL.)*
-5. Railway will build and deploy. Copy the public URL shown in the Railway dashboard (e.g. `https://your-app.up.railway.app`).
-6. Verify: `https://your-app.up.railway.app/health` → should return `{"status":"ok","model":"xgb_ensemble_v2"}`
-
----
-
-### Step 2 — Deploy Frontend to Vercel
-
-1. Go to [vercel.com](https://vercel.com) → **Add New Project** → Import your GitHub repo.
-2. Set **Root Directory** to `frontend-glass`.
-3. Vercel auto-detects Vite. Confirm:
-   - **Build Command**: `npm run build`
-   - **Output Directory**: `dist`
-4. Under **Environment Variables**, add:
-   ```
-   VITE_API_URL = https://your-app.up.railway.app
-   ```
-5. Click **Deploy**. Vercel gives you a URL like `https://your-app.vercel.app`.
-6. Go back to Railway → update `ALLOWED_ORIGINS` to `https://your-app.vercel.app` → redeploy.
-
----
-
-### Post-Deploy Checklist
-
-- [ ] `GET /health` on Railway URL returns `{"status":"ok"}`
-- [ ] Vercel URL loads Glass Lens UI
-- [ ] "API Connected" indicator is green
-- [ ] "Generate Random" returns a result
-- [ ] All 5 preset buttons work (APPROVE, STEP_UP_AUTH, ESCALATE, DECLINE, ABSTAIN)
-- [ ] Decision Landscape canvas renders
-- [ ] No CORS errors in browser console
+- **Frontend (Vercel):** Set `VITE_API_URL` to your backend URL in the Vercel dashboard.
+- **Backend (Railway):** Set `ALLOWED_ORIGINS` to your frontend URL in the Railway dashboard.

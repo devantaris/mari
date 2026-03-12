@@ -1,4 +1,4 @@
-# 🌌 Glass Lens: Risk-Aware Fraud Decision Engine
+# 🌌 Risk-Aware Fraud Decision Engine
 
 > A production-grade decision intelligence system combining ensemble ML, epistemic uncertainty, and novelty detection into a unified, cost-aware routing architecture.
 
@@ -87,3 +87,4 @@ npm run dev
 
 - **Frontend (Vercel):** Set `VITE_API_URL` to your backend URL in the Vercel dashboard.
 - **Backend (Railway):** Set `ALLOWED_ORIGINS` to your frontend URL in the Railway dashboard.
+

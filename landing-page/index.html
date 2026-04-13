@@ -15,7 +15,7 @@
   <!-- Glowing Ambient Background Canvas -->
   <canvas id="ambientCanvas"></canvas>
 
-  <nav class="navbar">
+  <nav class="navbar floating-pill">
     <div class="nav-container">
       <div class="nav-brand">
         <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
@@ -25,28 +25,46 @@
       </div>
       <div class="nav-links">
         <a href="#architecture">Architecture</a>
+        <a href="docs.html" target="_blank">Documentation</a>
         <a href="https://github.com/devantaris/risk-aware-fraud-detection" target="_blank" rel="noopener">GitHub</a>
-        <a href="http://localhost:5173/" class="btn-outline">Launch Dashboard</a>
+        <a href="http://localhost:5173/" class="btn-primary-sm glow-button">Launch Dashboard</a>
       </div>
     </div>
   </nav>
 
   <!-- Hero Section -->
   <header class="hero-section">
-    <div class="hero-content fade-in">
-      <div class="hero-badge mono">XGBOOST BOOTSTRAP ENSEMBLE</div>
-      <h1 class="hero-title">Intelligent Fraud<br><span class="text-gradient">Routing Engine.</span></h1>
-      <p class="hero-subtitle">
-        A decision-theoretic framework that routes transactions by evaluating not just risk, but the <strong>uncertainty</strong> of its models and the <strong>novelty</strong> of the behavior.
-      </p>
-      <div class="hero-actions">
-        <a href="http://localhost:5173/" class="btn-primary">
-          Launch Dashboard
-          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-            <path d="M5 12h14M12 5l7 7-7 7"/>
-          </svg>
-        </a>
-        <a href="#architecture" class="btn-secondary">Explore Architecture</a>
+    <div class="hero-split">
+      <div class="hero-content fade-in">
+        <div class="hero-badge mono">XGBOOST BOOTSTRAP ENSEMBLE</div>
+        <h1 class="hero-title">Intelligent Fraud<br><span class="text-gradient">Routing Engine.</span></h1>
+        <p class="hero-subtitle">
+          A decision-theoretic framework that routes transactions by evaluating not just risk, but the <strong>uncertainty</strong> of its models and the <strong>novelty</strong> of the behavior.
+        </p>
+        <div class="hero-actions">
+          <a href="http://localhost:5173/" class="btn-primary">
+            Launch Dashboard
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <path d="M5 12h14M12 5l7 7-7 7"/>
+            </svg>
+          </a>
+          <a href="#architecture" class="btn-secondary">Explore Architecture</a>
+        </div>
+      </div>
+      
+      <div class="hero-3d-visual fade-in" style="animation-delay: 0.3s;">
+        <div class="credit-card-3d">
+          <div class="card-chip"></div>
+          <div class="card-logo">💳 FINTECH</div>
+          <div class="card-number mono">**** **** **** 4912</div>
+          <div class="card-glow"></div>
+        </div>
+        <div class="fraud-overlay badge-approve float-1">
+          <span class="dot"></span> LOW RISK
+        </div>
+        <div class="fraud-overlay badge-decline float-2">
+          <span class="dot"></span> HIGH UNCERTAINTY
+        </div>
       </div>
     </div>
   </header>

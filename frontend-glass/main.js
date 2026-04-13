@@ -540,19 +540,6 @@ function init() {
         content.addEventListener('mouseleave', closeTab);
     });
 
-    // ---- Docs modal ----
-    const docsModal = $('#docsModal');
-    $('#btnOpenDocs').addEventListener('click', () => {
-        docsModal.classList.add('open');
-        document.body.style.overflow = 'hidden';
-    });
-    const closeDocs = () => {
-        docsModal.classList.remove('open');
-        document.body.style.overflow = '';
-    };
-    $('#docsClose').addEventListener('click', closeDocs);
-    $('#docsOverlay').addEventListener('click', closeDocs);
-    document.addEventListener('keydown', e => { if (e.key === 'Escape') closeDocs(); });
 
     // Handle window resize for canvas
     window.addEventListener('resize', () => {

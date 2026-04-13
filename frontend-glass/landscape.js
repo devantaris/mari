@@ -1,5 +1,5 @@
 /* ========================================================
-   Glass Lens — Decision Landscape Canvas
+   MARI — Decision Landscape Canvas
    2D Risk × Uncertainty visualization with decision regions
    ======================================================== */
 
@@ -28,11 +28,20 @@ const REGION_COLORS = {
 };
 
 const DOT_COLORS = {
-    APPROVE: '#00ffcc',
-    ABSTAIN: '#bd00ff',
-    STEP_UP_AUTH: '#ffaa00',
-    ESCALATE_INVEST: '#ff3366',
-    DECLINE: '#ff0033',
+    dark: {
+        APPROVE: '#00ffcc',
+        ABSTAIN: '#bd00ff',
+        STEP_UP_AUTH: '#ffaa00',
+        ESCALATE_INVEST: '#ff3366',
+        DECLINE: '#ff0033',
+    },
+    light: {
+        APPROVE: '#059669',
+        ABSTAIN: '#7c3aed',
+        STEP_UP_AUTH: '#d97706',
+        ESCALATE_INVEST: '#dc2626',
+        DECLINE: '#b91c1c',
+    },
 };
 
 // ---- Thresholds from decision_engine.py ----
@@ -242,10 +251,12 @@ function drawThresholdLines() {
 }
 
 function drawPoints() {
+    const theme = isDark ? 'dark' : 'light';
+    const dotColors = DOT_COLORS[theme];
     // History points (faded)
     transactionHistory.forEach((pt, i) => {
         const alpha = Math.max(0.15, 1 - (i / transactionHistory.length) * 0.8);
-        const color = DOT_COLORS[pt.decision] || '#00e5ff';
+        const color = dotColors[pt.decision] || '#00e5ff';
         const px = riskToX(pt.risk);
         const py = uncToY(Math.min(pt.uncertainty, UNC_MAX));
 
@@ -262,7 +273,7 @@ function drawPoints() {
 
     // Current point (glowing)
     if (currentPoint) {
-        const color = DOT_COLORS[currentPoint.decision] || '#00e5ff';
+        const color = dotColors[currentPoint.decision] || '#00e5ff';
         const px = riskToX(currentPoint.risk);
         const py = uncToY(Math.min(currentPoint.uncertainty, UNC_MAX));
 
@@ -282,7 +293,7 @@ function drawPoints() {
         ctx.shadowBlur = 15;
         ctx.shadowColor = color;
         ctx.fill();
-        ctx.strokeStyle = '#fff';
+        ctx.strokeStyle = isDark ? '#fff' : '#1a1a2e';
         ctx.lineWidth = 1.5;
         ctx.stroke();
         ctx.shadowBlur = 0;

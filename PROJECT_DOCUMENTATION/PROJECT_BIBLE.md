@@ -32,7 +32,7 @@
 22. [Technical Debt](#22-technical-debt)
 23. [Inferred Design Decisions](#23-inferred-design-decisions)
 24. [Image Placeholders](#24-image-placeholders)
-25. [Glass Lens Frontend](#25-glass-lens-frontend)
+25. [MARI Frontend](#25-mari-frontend)
 
 ---
 
@@ -856,7 +856,7 @@ See: `PROJECT_DOCUMENTATION/dependency_graph.mmd`
 
 ---
 
-# 25. GLASS LENS FRONTEND
+# 25. MARI FRONTEND
 
 A new glassmorphism-styled frontend that visualizes each transaction as a layered "X-Ray" through all three detection axes.
 
@@ -900,7 +900,7 @@ A new glassmorphism-styled frontend that visualizes each transaction as a layere
 # Terminal 1: Backend
 python -m uvicorn api.main:app --host 0.0.0.0 --port 8000
 
-# Terminal 2: Glass Lens Frontend
+# Terminal 2: MARI Frontend
 cd frontend-glass
 npm install   # first time only
 npm run dev   # → http://localhost:5173

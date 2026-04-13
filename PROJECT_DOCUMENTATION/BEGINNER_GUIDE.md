@@ -144,7 +144,7 @@ Here's how transaction data flows through the system:
 | **Decision Engine** | `backend/engine/decision_engine.py` | The brain — runs all 3 axes + routing + cost simulation |
 | **XGBoost Ensemble** | `artifacts/xgb_ensemble.pkl` | 5 pre-trained fraud detection models (serialized) |
 | **Isolation Forest** | `artifacts/isolation_forest.pkl` | Pre-trained novelty detector (serialized) |
-| **Glass Lens UI** | `frontend-glass/` | Beautiful glassmorphism frontend (Vite + JS) |
+| **MARI UI** | `frontend-glass/` | Beautiful glassmorphism frontend (Vite + JS) |
 | **Streamlit UI** | `frontend/app.py` | Simpler demo frontend |
 
 ---
@@ -222,9 +222,9 @@ VITE v6.x ready in Xms
 
 ---
 
-## 🔬 How Glass Lens Visualizes the Engine
+## 🔬 How MARI Visualizes the Engine
 
-The Glass Lens frontend shows the transaction passing through **4 layers**:
+The MARI frontend shows the transaction passing through **4 layers**:
 
 | Panel | What you see | Maps to engine step |
 |-------|-------------|-------------------|
@@ -260,7 +260,7 @@ Risk Aware Fraud Transaction Decision System/
 ├── api/                  ← FastAPI server (receives transactions)
 ├── backend/engine/       ← Decision Engine (the brain)
 ├── artifacts/            ← Trained models (.pkl files)
-├── frontend-glass/       ← Glass Lens UI (Vite + JS)
+├── frontend-glass/       ← MARI UI (Vite + JS)
 ├── frontend/             ← Streamlit demo UI
 ├── PROJECT_DOCUMENTATION/ ← Architecture diagrams, this guide
 ├── phase0–5 scripts      ← Research pipeline (offline)

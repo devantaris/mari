@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>MARI - Risk-Aware Fraud Decision System</title>
+  <meta name="description" content="Decision-theoretic transaction routing system using calibrated risk, bootstrap uncertainty, and novelty detection.">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style.css">
+</head>
+<body class="dark-theme">
+  
+  <!-- Glowing Ambient Background Canvas -->
+  <canvas id="ambientCanvas"></canvas>
+
+  <nav class="navbar">
+    <div class="nav-container">
+      <div class="nav-brand">
+        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"/>
+        </svg>
+        <span class="brand-text">MARI</span>
+      </div>
+      <div class="nav-links">
+        <a href="#architecture">Architecture</a>
+        <a href="https://github.com/devantaris/risk-aware-fraud-detection" target="_blank" rel="noopener">GitHub</a>
+        <a href="http://localhost:5173/" class="btn-outline">Launch Dashboard</a>
+      </div>
+    </div>
+  </nav>
+
+  <!-- Hero Section -->
+  <header class="hero-section">
+    <div class="hero-content fade-in">
+      <div class="hero-badge mono">XGBOOST BOOTSTRAP ENSEMBLE</div>
+      <h1 class="hero-title">Intelligent Fraud<br><span class="text-gradient">Routing Engine.</span></h1>
+      <p class="hero-subtitle">
+        A decision-theoretic framework that routes transactions by evaluating not just risk, but the <strong>uncertainty</strong> of its models and the <strong>novelty</strong> of the behavior.
+      </p>
+      <div class="hero-actions">
+        <a href="http://localhost:5173/" class="btn-primary">
+          Launch Dashboard
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M5 12h14M12 5l7 7-7 7"/>
+          </svg>
+        </a>
+        <a href="#architecture" class="btn-secondary">Explore Architecture</a>
+      </div>
+    </div>
+  </header>
+
+  <!-- Value Proposition / Metrics -->
+  <section class="metrics-section">
+    <div class="metrics-container drop-in">
+      <div class="metric-card glass-panel">
+        <h3 class="mono text-brand">284K+</h3>
+        <p>Live Transactions Processed</p>
+      </div>
+      <div class="metric-card glass-panel">
+        <h3 class="mono text-brand">31 DIMS</h3>
+        <p>PCA Feature Space</p>
+      </div>
+      <div class="metric-card glass-panel">
+        <h3 class="mono text-brand">5 NODES</h3>
+        <p>Bootstrap Evaluation</p>
+      </div>
+      <div class="metric-card glass-panel">
+        <h3 class="mono text-brand">5 DECISIONS</h3>
+        <p>Asymmetric Cost Actions</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- Architecture Section -->
+  <section id="architecture" class="arch-section">
+    <div class="arch-container">
+      <div class="section-header slide-up">
+        <h2 class="section-title">The Three Pillars of Decision</h2>
+        <p class="section-desc">MARI processes data through three distinct computational layers to determine the most cost-effective routing outcome.</p>
+      </div>
+
+      <div class="pipeline-grid">
+        <!-- Layer 1 -->
+        <div class="pipeline-card glass-panel zoom-in">
+          <div class="card-icon icon-cyan">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"></polyline></svg>
+          </div>
+          <h3>Ensemble Risk</h3>
+          <p>Calculates the calibrated fraud probability from an XGBoost bootstrap ensemble. Higher values indicate stronger fraud signals.</p>
+        </div>
+
+        <!-- Layer 2 -->
+        <div class="pipeline-card glass-panel zoom-in" style="transition-delay: 100ms;">
+          <div class="card-icon icon-purple">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M12 2a14.5 14.5 0 0 0 0 20 14.5 14.5 0 0 0 0-20"/><path d="M2 12h20"/></svg>
+          </div>
+          <h3>Predictive Uncertainty</h3>
+          <p>Measures disagreement across 5 bootstrap models via standard deviation. High variance indicates low model confidence.</p>
+        </div>
+
+        <!-- Layer 3 -->
+        <div class="pipeline-card glass-panel zoom-in" style="transition-delay: 200ms;">
+          <div class="card-icon icon-pink">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/><circle cx="12" cy="11" r="3"/></svg>
+          </div>
+          <h3>Novelty Isolation</h3>
+          <p>An Isolation Forest trained purely on legitimate behavior flags zero-day exploits and totally unseen data profiles.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- CTA Section -->
+  <section class="cta-section">
+    <div class="cta-card glass-panel fade-in">
+      <h2>Ready to observe the pipeline in action?</h2>
+      <p>Simulate transactions, inject extreme scenarios, and audit the cost simulations.</p>
+      <a href="http://localhost:5173/" class="btn-primary glow-button">
+        Initialize Dashboard Subsystem
+      </a>
+    </div>
+  </section>
+
+  <footer class="site-footer">
+    <p class="mono">Developed by <strong>Devansh Kumar</strong> (@devantaris) — Risk Aware Fraud Transaction Decision System</p>
+  </footer>
+
+  <script src="script.js"></script>
+</body>
+</html>

@@ -1,5 +1,5 @@
 /* ========================================================
-   Glass Lens — Main Application Logic
+   MARI — Main Application Logic
    Handles API calls, rendering, animations, and UI state
    ======================================================== */
 
@@ -10,29 +10,38 @@ const API_URL = '/api/predict';
 const DIRECT_API_URL = 'http://localhost:8000/predict';
 
 // ---- Decision Metadata ----
+// SVG icon factory — clean minimal fintech strokes (24×24 viewbox)
+const SVG_ICONS = {
+    shieldCheck: '<svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/><path d="m9 12 2 2 4-4"/></svg>',
+    pauseCircle: '<svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="10" y1="15" x2="10" y2="9"/><line x1="14" y1="15" x2="14" y2="9"/></svg>',
+    lockKeyhole: '<svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/><circle cx="12" cy="16" r="1"/></svg>',
+    alertTriangle: '<svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="m21.73 18-8-14a2 2 0 0 0-3.48 0l-8 14A2 2 0 0 0 4 21h16a2 2 0 0 0 1.73-3Z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>',
+    xOctagon: '<svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><polygon points="7.86 2 16.14 2 22 7.86 22 16.14 16.14 22 7.86 22 2 16.14 2 7.86 7.86 2"/><line x1="15" y1="9" x2="9" y2="15"/><line x1="9" y1="9" x2="15" y2="15"/></svg>',
+};
+
 const DECISION_META = {
     APPROVE: {
-        icon: '✓', class: 'verdict-approve',
+        icon: SVG_ICONS.shieldCheck, class: 'verdict-approve',
         label: 'Approved',
         explanation: 'Transaction is safe. Low risk with high model confidence.',
     },
     ABSTAIN: {
-        icon: '◌', class: 'verdict-abstain',
+        icon: SVG_ICONS.pauseCircle, class: 'verdict-abstain',
         label: 'Abstain — Deferred',
         explanation: 'Low risk but the ensemble models disagree. Decision deferred for safety.',
     },
     STEP_UP_AUTH: {
-        icon: '⚿', class: 'verdict-stepup',
+        icon: SVG_ICONS.lockKeyhole, class: 'verdict-stepup',
         label: 'Step-Up Authentication',
         explanation: 'Medium risk detected. Additional authentication required (e.g., OTP, biometric).',
     },
     ESCALATE_INVEST: {
-        icon: '⚑', class: 'verdict-escalate',
+        icon: SVG_ICONS.alertTriangle, class: 'verdict-escalate',
         label: 'Escalate to Analyst',
         explanation: 'High risk with model uncertainty, or novel behavior detected. Routed to human fraud analyst.',
     },
     DECLINE: {
-        icon: '✕', class: 'verdict-decline',
+        icon: SVG_ICONS.xOctagon, class: 'verdict-decline',
         label: 'Declined',
         explanation: 'High risk with high model confidence. Transaction auto-blocked.',
     },
@@ -291,7 +300,7 @@ function renderAnalysis(features, payload) {
     // Remove old classes
     verdictCard.className = 'verdict-card glass-card layer-hidden ' + meta.class;
 
-    $('#verdictIcon').textContent = meta.icon;
+    $('#verdictIcon').innerHTML = meta.icon;
     $('#verdictDecision').textContent = decision.replace(/_/g, ' ');
     $('#verdictExplanation').textContent = meta.explanation;
 
@@ -454,13 +463,16 @@ async function handleGenerate(features, isPreset = false, presetName = null) {
 }
 
 // ---- Theme Toggle ----
+const SUN_SVG = '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/></svg>';
+const MOON_SVG = '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>';
+
 function toggleTheme() {
     const html = document.documentElement;
     const current = html.getAttribute('data-theme');
     const next = current === 'dark' ? 'light' : 'dark';
     html.setAttribute('data-theme', next);
-    $('#themeToggle .theme-icon').textContent = next === 'dark' ? '☀' : '☾';
-    localStorage.setItem('glass-lens-theme', next);
+    $('#themeToggle .theme-icon').innerHTML = next === 'dark' ? SUN_SVG : MOON_SVG;
+    localStorage.setItem('mari-theme', next);
     // Re-render landscape canvas
     initLandscape($('#landscapeCanvas'));
 }
@@ -468,10 +480,10 @@ function toggleTheme() {
 // ---- Init ----
 function init() {
     // Restore theme
-    const saved = localStorage.getItem('glass-lens-theme');
+    const saved = localStorage.getItem('mari-theme');
     if (saved) {
         document.documentElement.setAttribute('data-theme', saved);
-        $('#themeToggle .theme-icon').textContent = saved === 'dark' ? '☀' : '☾';
+        $('#themeToggle .theme-icon').innerHTML = saved === 'dark' ? SUN_SVG : MOON_SVG;
     }
 
     // Init landscape canvas

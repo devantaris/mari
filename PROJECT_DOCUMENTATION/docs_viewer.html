@@ -580,13 +580,13 @@
                     <div class="icon">⚡</div>
                     <div class="ft">Mermaid</div>
                     <div class="name">runtime_flow_graph.mmd</div>
-                    <div class="desc">Startup call stacks, POST /predict call chain, Streamlit & Glass Lens flows</div>
+                    <div class="desc">Startup call stacks, POST /predict call chain, Streamlit & MARI flows</div>
                 </div>
                 <div class="file-card mmd" onclick="showSection('sequence')">
                     <div class="icon">🔄</div>
                     <div class="ft">Mermaid</div>
                     <div class="name">sequence_diagrams.mmd</div>
-                    <div class="desc">4 UML sequence diagrams: API, Streamlit, Glass Lens, and Docker deployment</div>
+                    <div class="desc">4 UML sequence diagrams: API, Streamlit, MARI, and Docker deployment</div>
                 </div>
             </div>
         </div>
@@ -654,7 +654,7 @@
             </div>
 
             <div class="diagram-block">
-                <h3>Diagram 2b — Glass Lens Frontend Flow</h3>
+                <h3>Diagram 2b — MARI Frontend Flow</h3>
                 <div class="mermaid-container">
                     <div class="mermaid" id="seq2b-diagram"></div>
                 </div>
@@ -841,7 +841,7 @@ All values are extracted directly from source code.
 |---------|------|----------|
 | FastAPI (uvicorn) | \`8000\` | HTTP |
 | Streamlit (default) | \`8501\` | HTTP |
-| Glass Lens (Vite dev) | \`5173\` | HTTP |
+| MARI (Vite dev) | \`5173\` | HTTP |
 
 ---
 
@@ -886,7 +886,7 @@ All values are extracted directly from source code.
         const ARCH_MMD = `graph TB
     subgraph CLIENT_LAYER["Client / UI Layer"]
         direction LR
-        GLASS_LENS["Glass Lens Frontend<br/>(frontend-glass/)<br/>Vite + Vanilla JS<br/>Port: 5173"]
+        MARI_UI["MARI Frontend<br/>(frontend-glass/)<br/>Vite + Vanilla JS<br/>Port: 5173"]
         STREAMLIT["Streamlit Frontend<br/>(frontend/app.py)<br/>Port: 8501"]
         SWAGGER["Swagger UI<br/>/docs"]
         EXTERNAL_CLIENT["External HTTP Client"]
@@ -926,7 +926,7 @@ All values are extracted directly from source code.
     subgraph DOCKER_LAYER["Deployment Layer"]
         DOCKERFILE["Dockerfile<br/>Base: python:3.11<br/>CMD: uvicorn api.main:app"]
     end
-    GLASS_LENS -->|"HTTP POST /predict"| FASTAPI
+    MARI_UI -->|"HTTP POST /predict"| FASTAPI
     STREAMLIT -->|"HTTP POST /predict"| FASTAPI
     SWAGGER -->|"HTTP"| FASTAPI
     EXTERNAL_CLIENT -->|"HTTP"| FASTAPI
@@ -970,7 +970,7 @@ All values are extracted directly from source code.
             JOBLIB_PKG["joblib"]
             PYDANTIC_PKG["pydantic"]
         end
-        subgraph GLASS_DEPS["Glass Lens Dependencies (npm)"]
+        subgraph MARI_DEPS["MARI Dependencies (npm)"]
             VITE_PKG["vite (dev server + bundler)"]
             FETCH_API["Fetch API (browser built-in)"]
             CANVAS_API["Canvas 2D API (browser built-in)"]
@@ -1044,7 +1044,7 @@ All values are extracted directly from source code.
         R5["Assemble result dict"]
         R6["Return JSON response"]
     end
-    subgraph GLASS_LENS_FLOW["Glass Lens Runtime Flow"]
+    subgraph MARI_FLOW["MARI Runtime Flow"]
         GL1["Vite dev server starts on :5173"]
         GL2["Browser loads index.html"]
         GL3["main.js: init() called on DOMContentLoaded"]
@@ -1081,7 +1081,7 @@ All values are extracted directly from source code.
 
         const SEQ1_MMD = `sequenceDiagram
     autonumber
-    participant Client as Client / Glass Lens / Streamlit UI
+    participant Client as Client / MARI / Streamlit UI
     participant FastAPI as FastAPI (api/main.py)
     participant Pydantic as TransactionInput Validator
     participant Engine as DecisionEngine
@@ -1150,7 +1150,7 @@ All values are extracted directly from source code.
         const SEQ2B_MMD = `sequenceDiagram
     autonumber
     participant User as End User (Browser)
-    participant GlassLens as Glass Lens Frontend (frontend-glass/)
+    participant GlassLens as MARI Frontend (frontend-glass/)
     participant Vite as Vite Dev Proxy (:5173/api -> :8000)
     participant API as FastAPI API (localhost:8000)
     User->>+GlassLens: Click "Generate Random" or preset button

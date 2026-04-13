@@ -1,10 +1,10 @@
-# 🌌 Risk-Aware Fraud Decision Engine
+# 🌌 MARI: Multi-Axis Risk Intelligence
 
 > A production-grade decision intelligence system combining ensemble ML, epistemic uncertainty, and novelty detection into a unified, cost-aware routing architecture.
 
 ## 🚀 Overview
 
-Traditional fraud systems treat transactions as a binary `APPROVE` or `DECLINE`, ignoring the nuance of model confidence. **Glass Lens** changes this paradigm by evaluating transactions across three dimensions:
+Traditional fraud systems treat transactions as a binary `APPROVE` or `DECLINE`, ignoring the nuance of model confidence. **MARI** changes this paradigm by evaluating transactions across three dimensions:
 
 1. **Risk Score:** Consensus probability from a 5-model Bootstrap XGBoost Ensemble.
 2. **Predictive Uncertainty:** Standard deviation across the ensemble (epistemic disagreement).

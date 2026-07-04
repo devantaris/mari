@@ -1,0 +1,787 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MARI — Visual Research Journal</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg: #09090b;
+            --surface: #18181b;
+            --border: #27272a;
+            --text: #fafafa;
+            --text-dim: #a1a1aa;
+            --accent: #6366f1;
+            --accent-light: #818cf8;
+            --green: #22c55e;
+            --green-bg: rgba(34,197,94,0.1);
+            --red: #ef4444;
+            --red-bg: rgba(239,68,68,0.1);
+            --amber: #f59e0b;
+            --amber-bg: rgba(245,158,11,0.1);
+            --cyan: #06b6d4;
+            --cyan-bg: rgba(6,182,212,0.1);
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background: var(--bg);
+            color: var(--text);
+            line-height: 1.7;
+            overflow-x: hidden;
+        }
+
+        /* HERO */
+        .hero {
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+            padding: 4rem 2rem;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .hero::before {
+            content: '';
+            position: absolute;
+            width: 600px;
+            height: 600px;
+            background: radial-gradient(circle, rgba(99,102,241,0.15), transparent 70%);
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            pointer-events: none;
+        }
+
+        .hero-badge {
+            display: inline-block;
+            padding: 0.4rem 1rem;
+            border: 1px solid var(--border);
+            border-radius: 999px;
+            font-size: 0.8rem;
+            letter-spacing: 0.1em;
+            text-transform: uppercase;
+            color: var(--accent-light);
+            margin-bottom: 2rem;
+        }
+
+        .hero h1 {
+            font-size: clamp(2.5rem, 6vw, 5rem);
+            font-weight: 900;
+            line-height: 1.1;
+            margin-bottom: 1.5rem;
+            background: linear-gradient(135deg, #e0e7ff 0%, #6366f1 50%, #a78bfa 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .hero p {
+            max-width: 600px;
+            color: var(--text-dim);
+            font-size: 1.15rem;
+        }
+
+        .scroll-indicator {
+            margin-top: 4rem;
+            animation: bob 2s ease-in-out infinite;
+        }
+
+        .scroll-indicator svg {
+            width: 28px;
+            height: 28px;
+            stroke: var(--text-dim);
+        }
+
+        @keyframes bob {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(10px); }
+        }
+
+        /* SECTION WRAPPER */
+        .journal-section {
+            max-width: 1100px;
+            margin: 0 auto;
+            padding: 6rem 2rem;
+            border-top: 1px solid var(--border);
+        }
+
+        /* PHASE BADGE */
+        .phase-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            padding: 0.4rem 1rem;
+            border-radius: 999px;
+            font-size: 0.75rem;
+            font-weight: 600;
+            letter-spacing: 0.08em;
+            text-transform: uppercase;
+            margin-bottom: 1.5rem;
+        }
+
+        .phase-badge.observation { background: var(--cyan-bg); color: var(--cyan); border: 1px solid rgba(6,182,212,0.3); }
+        .phase-badge.revelation { background: var(--amber-bg); color: var(--amber); border: 1px solid rgba(245,158,11,0.3); }
+        .phase-badge.result { background: var(--green-bg); color: var(--green); border: 1px solid rgba(34,197,94,0.3); }
+        .phase-badge.approach { background: rgba(99,102,241,0.1); color: var(--accent-light); border: 1px solid rgba(99,102,241,0.3); }
+        .phase-badge.improvement { background: var(--red-bg); color: var(--red); border: 1px solid rgba(239,68,68,0.3); }
+
+        .journal-section h2 {
+            font-size: 2.2rem;
+            font-weight: 800;
+            margin-bottom: 0.5rem;
+        }
+
+        .journal-section .subtitle {
+            color: var(--text-dim);
+            font-size: 1.1rem;
+            margin-bottom: 2.5rem;
+            max-width: 700px;
+        }
+
+        /* NARRATIVE TEXT */
+        .narr {
+            color: #d4d4d8;
+            font-size: 1.05rem;
+            margin-bottom: 1.5rem;
+            max-width: 760px;
+        }
+
+        .narr strong { color: var(--text); }
+
+        /* INSIGHT CALLOUT */
+        .insight {
+            background: var(--surface);
+            border-left: 3px solid var(--accent);
+            padding: 1.2rem 1.5rem;
+            border-radius: 0 8px 8px 0;
+            margin: 1.5rem 0;
+            max-width: 760px;
+        }
+
+        .insight-label {
+            font-size: 0.7rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+            color: var(--accent-light);
+            margin-bottom: 0.3rem;
+        }
+
+        .insight p { color: #d4d4d8; font-size: 0.95rem; }
+
+        /* STAT ROW */
+        .stat-row {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+            gap: 1rem;
+            margin: 2rem 0;
+        }
+
+        .stat-card {
+            background: var(--surface);
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            padding: 1.5rem;
+            transition: transform 0.2s;
+        }
+
+        .stat-card:hover { transform: translateY(-2px); }
+
+        .stat-label {
+            font-size: 0.75rem;
+            color: var(--text-dim);
+            text-transform: uppercase;
+            letter-spacing: 0.08em;
+            margin-bottom: 0.5rem;
+        }
+
+        .stat-value {
+            font-size: 1.8rem;
+            font-weight: 800;
+        }
+
+        .stat-value.green { color: var(--green); }
+        .stat-value.red { color: var(--red); }
+        .stat-value.amber { color: var(--amber); }
+        .stat-value.accent { color: var(--accent-light); }
+
+        /* FIGURES */
+        .fig-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(400px, 1fr));
+            gap: 1.5rem;
+            margin: 2rem 0;
+        }
+
+        .fig-card {
+            background: var(--surface);
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            overflow: hidden;
+        }
+
+        .fig-card.full { grid-column: 1 / -1; }
+
+        .fig-caption {
+            padding: 0.8rem 1.2rem;
+            font-size: 0.85rem;
+            color: var(--text-dim);
+            border-top: 1px solid var(--border);
+        }
+
+        .fig-caption strong { color: var(--text); }
+
+        .fig-img {
+            width: 100%;
+            display: block;
+            background: #fff;
+        }
+
+        /* TABLE */
+        .journal-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 2rem 0;
+            background: var(--surface);
+            border-radius: 12px;
+            overflow: hidden;
+            border: 1px solid var(--border);
+        }
+
+        .journal-table th, .journal-table td {
+            padding: 0.9rem 1.2rem;
+            text-align: left;
+            border-bottom: 1px solid var(--border);
+            font-size: 0.95rem;
+        }
+
+        .journal-table th {
+            background: rgba(0,0,0,0.3);
+            font-weight: 600;
+            color: var(--accent-light);
+            font-size: 0.8rem;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+        }
+
+        .journal-table td.highlight { color: var(--green); font-weight: 700; }
+
+        /* ARROW CONNECTOR */
+        .flow-arrow {
+            text-align: center;
+            padding: 2rem 0;
+            color: var(--text-dim);
+            font-size: 1.5rem;
+        }
+
+        /* DECISION MATRIX */
+        .matrix-visual {
+            display: grid;
+            grid-template-columns: auto 1fr 1fr;
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            overflow: hidden;
+            margin: 2rem 0;
+            background: var(--surface);
+        }
+
+        .matrix-cell {
+            padding: 1.2rem;
+            border: 1px solid var(--border);
+            text-align: center;
+        }
+
+        .matrix-header {
+            background: rgba(0,0,0,0.3);
+            font-weight: 700;
+            font-size: 0.8rem;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            color: var(--accent-light);
+        }
+
+        .matrix-row-label {
+            background: rgba(0,0,0,0.2);
+            font-weight: 600;
+            font-size: 0.85rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .matrix-action {
+            font-weight: 700;
+            font-size: 0.95rem;
+        }
+
+        .matrix-count {
+            font-size: 0.8rem;
+            color: var(--text-dim);
+            margin-top: 0.3rem;
+        }
+
+        .matrix-cell.red-zone { background: rgba(239,68,68,0.08); }
+        .matrix-cell.amber-zone { background: rgba(245,158,11,0.08); }
+        .matrix-cell.green-zone { background: rgba(34,197,94,0.08); }
+        .matrix-cell.cyan-zone { background: rgba(6,182,212,0.08); }
+
+        /* MONO */
+        code, .mono {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.9em;
+            color: var(--green);
+        }
+
+        /* RESPONSIVE */
+        @media (max-width: 768px) {
+            .fig-grid { grid-template-columns: 1fr; }
+            .stat-row { grid-template-columns: 1fr 1fr; }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- ==================== HERO ==================== -->
+    <section class="hero">
+        <div class="hero-badge">Research Journal // 2026</div>
+        <h1>MARI</h1>
+        <p>Machine-Learning Aided Risk Intelligence — A visual research journal documenting the journey from raw observation to actionable intelligence in credit card fraud detection.</p>
+        <div class="scroll-indicator">
+            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M19 9l-7 7-7-7"/></svg>
+        </div>
+    </section>
+
+    <!-- ==================== 1. OBSERVATION: THE DATA ==================== -->
+    <section class="journal-section">
+        <div class="phase-badge observation">&#x1F50D; Phase 1 — Observation</div>
+        <h2>The Nature of the Data</h2>
+        <p class="subtitle">Understanding the raw material before any model is built. What does fraud actually look like in 284,807 transactions?</p>
+
+        <p class="narr">We begin with a dataset of <strong>284,807 European credit card transactions</strong> collected over two days. The challenge is immediately visible: fraud constitutes merely <strong>0.1727%</strong> of all traffic — an imbalance ratio of <strong>1:577</strong>. A naive system that approves everything achieves 99.83% accuracy while catching zero fraud.</p>
+
+        <div class="stat-row">
+            <div class="stat-card">
+                <div class="stat-label">Total Transactions</div>
+                <div class="stat-value">284,807</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-label">Fraud Cases</div>
+                <div class="stat-value red">492</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-label">Fraud Rate</div>
+                <div class="stat-value amber">0.17%</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-label">Features</div>
+                <div class="stat-value accent">31</div>
+            </div>
+        </div>
+
+        <div class="fig-grid">
+            <div class="fig-card">
+                <img class="fig-img" src="figures/fig1_class_distribution.png">
+                <div class="fig-caption"><strong>Fig 1.</strong> The acute class imbalance — the fraud bar is barely visible at this scale.</div>
+            </div>
+            <div class="fig-card">
+                <img class="fig-img" src="figures/fig3_amount_boxplot.png">
+                <div class="fig-caption"><strong>Fig 2.</strong> Fraud amounts are surprisingly small (median $9.25) — fraudsters test with small charges first.</div>
+            </div>
+        </div>
+
+        <div class="insight">
+            <div class="insight-label">Key Observation</div>
+            <p>Fraudulent transactions have a <strong>lower median amount</strong> ($9.25 vs $22.00) but <strong>higher mean</strong> ($122.21 vs $88.29), suggesting a bimodal pattern: small test charges followed by high-value exploitation.</p>
+        </div>
+
+        <p class="narr">We also investigated temporal patterns. By extracting a cyclic hour-of-day feature, a stark pattern emerges: <strong>fraud rate peaks at 1.71% around 2 AM</strong>, compared to below 0.05% during busy midday hours. Fraudsters exploit low-monitoring windows.</p>
+
+        <div class="fig-grid">
+            <div class="fig-card">
+                <img class="fig-img" src="figures/fig6_fraud_rate_by_hour.png">
+                <div class="fig-caption"><strong>Fig 3.</strong> Hourly fraud rate — nighttime hours (2-4 AM) are the danger zone.</div>
+            </div>
+            <div class="fig-card">
+                <img class="fig-img" src="figures/fig4_time_distribution.png">
+                <div class="fig-caption"><strong>Fig 4.</strong> Temporal distribution of all transactions by class.</div>
+            </div>
+        </div>
+
+        <div class="fig-grid">
+            <div class="fig-card full">
+                <img class="fig-img" src="figures/fig7_correlation_heatmap.png">
+                <div class="fig-caption"><strong>Fig 5.</strong> Feature correlation heatmap — PCA features are largely independent by design, validating dataset integrity.</div>
+            </div>
+        </div>
+    </section>
+
+    <div class="flow-arrow">&#x2193; from observation, a pattern emerges &#x2193;</div>
+
+    <!-- ==================== 2. REVELATION: THE BASELINE ==================== -->
+    <section class="journal-section">
+        <div class="phase-badge revelation">&#x26A1; Phase 2 — Revelation</div>
+        <h2>Why Simple Models Fail</h2>
+        <p class="subtitle">The first attempt reveals a fundamental tension: precision vs recall in imbalanced landscapes.</p>
+
+        <p class="narr">Our first model, a Logistic Regression with balanced class weights, achieves a respectable <strong>ROC-AUC of 0.9712</strong> and catches <strong>89.8% of fraud</strong>. But there's a devastating catch: precision is merely <strong>5.35%</strong>. For every real fraud caught, the system falsely blocks <strong>17.7 innocent customers</strong>.</p>
+
+        <div class="stat-row">
+            <div class="stat-card">
+                <div class="stat-label">LR ROC-AUC</div>
+                <div class="stat-value">0.971</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-label">LR Recall</div>
+                <div class="stat-value green">89.8%</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-label">LR Precision</div>
+                <div class="stat-value red">5.35%</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-label">False Positives</div>
+                <div class="stat-value red">1,558</div>
+            </div>
+        </div>
+
+        <div class="fig-grid">
+            <div class="fig-card">
+                <img class="fig-img" src="figures/fig8_lr_confusion_matrix.png">
+                <div class="fig-caption"><strong>Fig 6.</strong> LR confusion matrix — the massive false positive count (1,558) is the red flag.</div>
+            </div>
+            <div class="fig-card">
+                <img class="fig-img" src="figures/fig11_lr_prob_distribution.png">
+                <div class="fig-caption"><strong>Fig 7.</strong> LR probability distributions — significant overlap between classes makes clean separation impossible.</div>
+            </div>
+        </div>
+
+        <div class="insight">
+            <div class="insight-label">The Revelation</div>
+            <p>A single threshold on a linear model cannot simultaneously achieve high precision and high recall in extreme imbalance. <strong>We need a non-linear model AND a smarter decision framework.</strong></p>
+        </div>
+    </section>
+
+    <div class="flow-arrow">&#x2193; revelation drives a new approach &#x2193;</div>
+
+    <!-- ==================== 3. APPROACH: XGBOOST + CALIBRATION ==================== -->
+    <section class="journal-section">
+        <div class="phase-badge approach">&#x1F527; Phase 3 — Approach</div>
+        <h2>Calibrated XGBoost & The Uncertainty Dimension</h2>
+        <p class="subtitle">Engineering a multi-model ensemble that doesn't just predict, but also knows when it doesn't know.</p>
+
+        <p class="narr">We replace Logistic Regression with <strong>XGBoost</strong> (300 trees, depth-4, lr=0.05), applying isotonic calibration to ensure probability outputs are reliable. The leap is dramatic:</p>
+
+        <table class="journal-table">
+            <thead>
+                <tr><th>Model</th><th>ROC-AUC</th><th>Precision</th><th>Recall</th><th>F1 Score</th></tr>
+            </thead>
+            <tbody>
+                <tr><td>Naive Majority</td><td>0.5000</td><td>0.0000</td><td>0.0000</td><td>0.0000</td></tr>
+                <tr><td>Logistic Regression</td><td>0.9712</td><td>0.0535</td><td>0.8980</td><td>0.1009</td></tr>
+                <tr><td><strong>Calibrated XGBoost</strong></td><td class="highlight">0.9855</td><td class="highlight">0.9146</td><td>0.7653</td><td class="highlight">0.8333</td></tr>
+            </tbody>
+        </table>
+
+        <div class="fig-grid">
+            <div class="fig-card">
+                <img class="fig-img" src="figures/fig13_xgb_roc_curve.png">
+                <div class="fig-caption"><strong>Fig 8.</strong> XGBoost ROC curve — AUC jumps to 0.9855.</div>
+            </div>
+            <div class="fig-card">
+                <img class="fig-img" src="figures/fig12_xgb_confusion_matrix.png">
+                <div class="fig-caption"><strong>Fig 9.</strong> XGBoost confusion matrix — only 7 false positives (vs 1,558 in LR).</div>
+            </div>
+        </div>
+
+        <p class="narr">But a single model still treats all predictions as equally confident. So we build a <strong>bootstrap ensemble of 5 calibrated XGBoost models</strong>. Each model is trained on a different random sample. The <em>mean</em> prediction becomes "Risk" and the <em>standard deviation</em> becomes "Uncertainty".</p>
+
+        <div class="stat-row">
+            <div class="stat-card">
+                <div class="stat-label">Ensemble Models</div>
+                <div class="stat-value accent">5</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-label">Ensemble AUC</div>
+                <div class="stat-value green">0.9852</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-label">Best Single AUC</div>
+                <div class="stat-value">0.9844</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-label">5-Fold CV AUC</div>
+                <div class="stat-value">0.9796<span style="font-size:0.7em;color:var(--text-dim)"> &#177; 0.0056</span></div>
+            </div>
+        </div>
+
+        <div class="fig-grid">
+            <div class="fig-card">
+                <img class="fig-img" src="figures/fig14_xgb_precision_recall.png">
+                <div class="fig-caption"><strong>Fig 10.</strong> Precision-Recall curve — the operating point (T=0.07) balances both axes.</div>
+            </div>
+            <div class="fig-card">
+                <img class="fig-img" src="figures/fig9_lr_roc_curve.png">
+                <div class="fig-caption"><strong>Fig 11.</strong> LR ROC for baseline comparison — visually weaker than XGBoost.</div>
+            </div>
+        </div>
+    </section>
+
+    <div class="flow-arrow">&#x2193; the approach yields the core innovation &#x2193;</div>
+
+    <!-- ==================== 4. RESULT: THE 2D ENGINE ==================== -->
+    <section class="journal-section">
+        <div class="phase-badge result">&#x2705; Phase 4 — Result</div>
+        <h2>The 2D Risk x Uncertainty Decision Engine</h2>
+        <p class="subtitle">The core contribution — a 6-zone decision matrix that doesn't just predict fraud, but knows when to ask for help.</p>
+
+        <p class="narr">Instead of a single threshold, we map every transaction into a <strong>two-dimensional space</strong>: the X-axis is mean predicted risk, the Y-axis is ensemble uncertainty. Three risk thresholds and one uncertainty threshold create <strong>6 distinct action zones</strong>:</p>
+
+        <!-- The Decision Matrix Visual -->
+        <div class="matrix-visual">
+            <div class="matrix-cell matrix-header"></div>
+            <div class="matrix-cell matrix-header">Uncertainty LOW (&lt; 0.015)</div>
+            <div class="matrix-cell matrix-header">Uncertainty HIGH (>= 0.015)</div>
+
+            <div class="matrix-cell matrix-row-label">Risk HIGH<br>(>= 0.80)</div>
+            <div class="matrix-cell red-zone">
+                <div class="matrix-action" style="color:var(--red)">AUTO_BLOCK</div>
+                <div class="matrix-count">41 txns &bull; 100% fraud</div>
+            </div>
+            <div class="matrix-cell amber-zone">
+                <div class="matrix-action" style="color:var(--amber)">ESCALATE_INVEST</div>
+                <div class="matrix-count">29 txns &bull; 93.1% fraud</div>
+            </div>
+
+            <div class="matrix-cell matrix-row-label">Risk MED<br>(0.12 - 0.80)</div>
+            <div class="matrix-cell">
+                <div class="matrix-action" style="color:var(--text-dim)">MANUAL_REVIEW</div>
+                <div class="matrix-count">0 txns</div>
+            </div>
+            <div class="matrix-cell amber-zone">
+                <div class="matrix-action" style="color:var(--amber)">ABSTAIN</div>
+                <div class="matrix-count">28 txns &bull; 50.0% fraud</div>
+            </div>
+
+            <div class="matrix-cell matrix-row-label">Risk LOW<br>(&lt; 0.12)</div>
+            <div class="matrix-cell green-zone">
+                <div class="matrix-action" style="color:var(--green)">AUTO_APPROVE</div>
+                <div class="matrix-count">56,813 txns &bull; 0.02% fraud</div>
+            </div>
+            <div class="matrix-cell cyan-zone">
+                <div class="matrix-action" style="color:var(--cyan)">STEP_UP_AUTH</div>
+                <div class="matrix-count">51 txns &bull; 7.8% fraud</div>
+            </div>
+        </div>
+
+        <div class="insight">
+            <div class="insight-label">The Breakthrough</div>
+            <p>The <strong>ABSTAIN</strong> zone caught <strong>14 fraud cases</strong> that a traditional threshold model would have either blindly approved or rejected. These transactions had medium risk but <em>high model disagreement</em> — the system correctly identifies it doesn't know and defers to humans.</p>
+        </div>
+
+        <div class="fig-grid">
+            <div class="fig-card">
+                <img class="fig-img" src="figures/fig15_2d_decision_space.png">
+                <div class="fig-caption"><strong>Fig 12.</strong> Every transaction plotted in 2D space, colored by its assigned decision zone.</div>
+            </div>
+            <div class="fig-card">
+                <img class="fig-img" src="figures/fig16_2d_true_labels.png">
+                <div class="fig-caption"><strong>Fig 13.</strong> Same space, but colored by true label — fraud (red) clusters in high-risk, high-uncertainty.</div>
+            </div>
+        </div>
+
+        <div class="fig-grid">
+            <div class="fig-card">
+                <img class="fig-img" src="figures/fig17_decision_distribution.png">
+                <div class="fig-caption"><strong>Fig 14.</strong> Distribution of decisions — vast majority auto-approved, small fraction escalated.</div>
+            </div>
+            <div class="fig-card">
+                <img class="fig-img" src="figures/fig18_fraud_per_decision.png">
+                <div class="fig-caption"><strong>Fig 15.</strong> Fraud vs legitimate breakdown within each zone — AUTO_BLOCK is 100% pure.</div>
+            </div>
+        </div>
+
+        <h3 style="margin-top:2rem;margin-bottom:1rem;font-size:1.3rem;">Economic Impact</h3>
+
+        <div class="stat-row">
+            <div class="stat-card">
+                <div class="stat-label">Total Portfolio Cost</div>
+                <div class="stat-value">$64,810</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-label">Cost per Transaction</div>
+                <div class="stat-value green">$1.14</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-label">Missed Fraud Cost</div>
+                <div class="stat-value">$5,000/ea</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-label">False Block Cost</div>
+                <div class="stat-value">$200/ea</div>
+            </div>
+        </div>
+    </section>
+
+    <div class="flow-arrow">&#x2193; but can we explain WHY? &#x2193;</div>
+
+    <!-- ==================== 5. APPROACH: EXPLAINABILITY ==================== -->
+    <section class="journal-section">
+        <div class="phase-badge approach">&#x1F4A1; Phase 5 — Explainability</div>
+        <h2>Opening the Black Box with SHAP</h2>
+        <p class="subtitle">Every decision must be explainable. SHAP deconstructs each prediction into per-feature contributions.</p>
+
+        <p class="narr">Regulatory frameworks demand that fraud decisions be interpretable. Using TreeSHAP, we decompose every prediction into per-feature contributions. Globally, <strong>V14</strong> (mean |SHAP| = 1.540), <strong>V4</strong> (1.410), and <strong>V10</strong> (0.646) are the top fraud discriminators. Notably, our engineered <code>hour</code> feature ranked 15th (0.183), validating temporal engineering.</p>
+
+        <div class="fig-grid">
+            <div class="fig-card">
+                <img class="fig-img" src="figures/fig19_shap_summary_beeswarm.png">
+                <div class="fig-caption"><strong>Fig 16.</strong> SHAP beeswarm plot — each dot is a test sample; position is SHAP value; color is feature value.</div>
+            </div>
+            <div class="fig-card">
+                <img class="fig-img" src="figures/fig20_shap_bar_importance.png">
+                <div class="fig-caption"><strong>Fig 17.</strong> Mean |SHAP| importance bar chart — V14 dominates decisively.</div>
+            </div>
+        </div>
+
+        <p class="narr" style="margin-top:2rem;">Individual force plots reveal <em>why</em> each transaction was flagged. This is especially powerful for the ABSTAIN zone — reviewers can see exactly which features created model disagreement:</p>
+
+        <div class="fig-grid">
+            <div class="fig-card full">
+                <img class="fig-img" src="figures/fig21_shap_fraud_case.png">
+                <div class="fig-caption"><strong>Fig 18.</strong> SHAP force plot for a confirmed fraud case — V14 and V4 push the prediction strongly toward fraud.</div>
+            </div>
+            <div class="fig-card full">
+                <img class="fig-img" src="figures/fig22_shap_legit_case.png">
+                <div class="fig-caption"><strong>Fig 19.</strong> SHAP force plot for a legitimate transaction — features collectively anchor the prediction near zero.</div>
+            </div>
+            <div class="fig-card full">
+                <img class="fig-img" src="figures/fig23_shap_abstain_case.png">
+                <div class="fig-caption"><strong>Fig 20.</strong> SHAP force plot for an ABSTAIN case — features pull in opposite directions, creating the uncertainty that triggered abstention.</div>
+            </div>
+        </div>
+
+        <div class="fig-grid">
+            <div class="fig-card">
+                <img class="fig-img" src="figures/fig24_1_shap_dependence_V14.png">
+                <div class="fig-caption"><strong>Fig 21.</strong> SHAP dependence plot: V14 — strong non-linear fraud signal.</div>
+            </div>
+            <div class="fig-card">
+                <img class="fig-img" src="figures/fig24_2_shap_dependence_V4.png">
+                <div class="fig-caption"><strong>Fig 22.</strong> SHAP dependence plot: V4 — bimodal fraud signal.</div>
+            </div>
+        </div>
+    </section>
+
+    <div class="flow-arrow">&#x2193; finally, can we defend against the unknown? &#x2193;</div>
+
+    <!-- ==================== 6. IMPROVEMENT: NOVELTY + CALIBRATION ==================== -->
+    <section class="journal-section">
+        <div class="phase-badge improvement">&#x1F6E1; Phase 6 — Improvement</div>
+        <h2>Defense in Depth: Novelty Detection & Calibration</h2>
+        <p class="subtitle">Two final layers that transform a good system into a production-grade one.</p>
+
+        <h3 style="margin-bottom:1rem;font-size:1.3rem;">Isolation Forest Novelty Layer</h3>
+        <p class="narr">Supervised models only know patterns from their training data. An entirely new fraud vector — never seen before — will bypass the XGBoost ensemble. To defend against this, we train an <strong>Isolation Forest</strong> exclusively on 227,451 legitimate transactions. It learns the "shape" of normal behavior and flags anything geometrically distant.</p>
+
+        <div class="stat-row">
+            <div class="stat-card">
+                <div class="stat-label">Anomalies Flagged</div>
+                <div class="stat-value amber">623</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-label">Decisions Upgraded</div>
+                <div class="stat-value green">561</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-label">Fraud Rescued from AUTO_APPROVE</div>
+                <div class="stat-value green">1</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-label">IF Standalone AUC</div>
+                <div class="stat-value">0.956</div>
+            </div>
+        </div>
+
+        <div class="fig-grid">
+            <div class="fig-card">
+                <img class="fig-img" src="figures/fig25_isolation_forest_distribution.png">
+                <div class="fig-caption"><strong>Fig 23.</strong> Anomaly score distributions — fraud scores shift right (more anomalous).</div>
+            </div>
+            <div class="fig-card">
+                <img class="fig-img" src="figures/fig26_xgb_vs_isoforest.png">
+                <div class="fig-caption"><strong>Fig 24.</strong> XGBoost probability vs Isolation Forest anomaly — the two models catch fraud on orthogonal axes.</div>
+            </div>
+        </div>
+
+        <div class="insight">
+            <div class="insight-label">Defense in Depth</div>
+            <p>By integrating the IF with the 2D engine, any anomalous <code>AUTO_APPROVE</code> is upgraded to <code>STEP_UP_AUTH</code>, and <code>STEP_UP</code> is upgraded to <code>MANUAL_REVIEW</code>. This rescued <strong>1 stealth fraud case</strong> that all 5 XGBoost models missed.</p>
+        </div>
+
+        <h3 style="margin-top:3rem;margin-bottom:1rem;font-size:1.3rem;">Probability Calibration</h3>
+        <p class="narr">The entire uncertainty engine depends on <em>accurate</em> probabilities. If the model says "70% chance of fraud," it must literally mean 7 out of 10 such transactions are fraudulent. Isotonic calibration ensures this:</p>
+
+        <div class="stat-row">
+            <div class="stat-card">
+                <div class="stat-label">Raw Brier Score</div>
+                <div class="stat-value red">0.00176</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-label">Calibrated Brier Score</div>
+                <div class="stat-value green">0.00045</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-label">Brier Reduction</div>
+                <div class="stat-value green">74.36%</div>
+            </div>
+        </div>
+
+        <div class="fig-grid">
+            <div class="fig-card">
+                <img class="fig-img" src="figures/fig27_reliability_curve.png">
+                <div class="fig-caption"><strong>Fig 25.</strong> Reliability curve — the calibrated model (blue) hugs the diagonal of perfect calibration.</div>
+            </div>
+            <div class="fig-card">
+                <img class="fig-img" src="figures/fig28_raw_vs_calibrated_probs.png">
+                <div class="fig-caption"><strong>Fig 26.</strong> Probability density comparison — calibration tightens legitimate scores near 0.</div>
+            </div>
+        </div>
+
+        <div class="fig-grid">
+            <div class="fig-card">
+                <img class="fig-img" src="figures/fig10_lr_precision_recall.png">
+                <div class="fig-caption"><strong>Fig 27.</strong> LR Precision-Recall for reference comparison — shows the gap calibrated XGBoost closes.</div>
+            </div>
+            <div class="fig-card">
+                <img class="fig-img" src="figures/fig5_hour_distribution.png">
+                <div class="fig-caption"><strong>Fig 28.</strong> Temporal distribution across 24hr cycle by class — foundational observation that drove feature engineering.</div>
+            </div>
+        </div>
+
+        <div class="fig-grid">
+            <div class="fig-card">
+                <img class="fig-img" src="figures/fig2_amount_distribution.png">
+                <div class="fig-caption"><strong>Fig 29.</strong> Overall transaction amount distribution — heavy right skew justified log1p transformation.</div>
+            </div>
+            <div class="fig-card">
+                <img class="fig-img" src="figures/fig24_3_shap_dependence_V10.png">
+                <div class="fig-caption"><strong>Fig 30.</strong> SHAP Dependence for V10 — the third most impactful feature in fraud classification.</div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ==================== CONCLUSION ==================== -->
+    <section class="journal-section" style="text-align:center; padding-bottom: 8rem;">
+        <div class="phase-badge result">&#x1F3AF; Conclusion</div>
+        <h2 style="max-width:700px; margin: 0 auto 1.5rem;">Uncertainty Is Not a Bug — It's a Feature</h2>
+        <p class="narr" style="max-width:650px; margin: 0 auto; text-align:center;">The MARI framework proves that epistemic uncertainty — conventionally treated as statistical noise — is a critical safety signal. By elevating uncertainty to a first-class citizen of the decision pipeline, we capture edge cases, defer to humans when appropriate, and produce a system that knows what it doesn't know, achieving an ultimate ROC-AUC of <strong>0.9852</strong> at <strong>$1.14/transaction</strong>.</p>
+    </section>
+
+</body>
+</html>

@@ -6,8 +6,8 @@
 import { initLandscape, plotTransaction, clearHistory } from './landscape.js';
 
 // ---- Config ----
-const API_URL = '/api/predict';
-const DIRECT_API_URL = 'http://localhost:8000/predict';
+const API_URL = (version) => `/api/predict?version=${version}`;
+const DIRECT_API_URL = (version) => `http://localhost:8000/predict?version=${version}`;
 
 // ---- Decision Metadata ----
 // SVG icon factory — clean minimal fintech strokes (24×24 viewbox)
@@ -25,6 +25,11 @@ const DECISION_META = {
         label: 'Approved',
         explanation: 'Transaction is safe. Low risk with high model confidence.',
     },
+    AUTO_APPROVE: {
+        icon: SVG_ICONS.shieldCheck, class: 'verdict-approve',
+        label: 'Auto Approved',
+        explanation: 'Transaction is safe. Low risk with high model confidence.',
+    },
     ABSTAIN: {
         icon: SVG_ICONS.pauseCircle, class: 'verdict-abstain',
         label: 'Abstain — Deferred',
@@ -35,9 +40,19 @@ const DECISION_META = {
         label: 'Step-Up Authentication',
         explanation: 'Medium risk detected. Additional authentication required (e.g., OTP, biometric).',
     },
+    STEP_UP: {
+        icon: SVG_ICONS.lockKeyhole, class: 'verdict-stepup',
+        label: 'Step-Up Authentication',
+        explanation: 'Medium risk detected. Additional authentication required (e.g., OTP, biometric).',
+    },
     ESCALATE_INVEST: {
         icon: SVG_ICONS.alertTriangle, class: 'verdict-escalate',
         label: 'Escalate to Analyst',
+        explanation: 'High risk with model uncertainty, or novel behavior detected. Routed to human fraud analyst.',
+    },
+    HUMAN_ESCALATE: {
+        icon: SVG_ICONS.alertTriangle, class: 'verdict-escalate',
+        label: 'Human Escalate',
         explanation: 'High risk with model uncertainty, or novel behavior detected. Routed to human fraud analyst.',
     },
     DECLINE: {
@@ -45,62 +60,28 @@ const DECISION_META = {
         label: 'Declined',
         explanation: 'High risk with high model confidence. Transaction auto-blocked.',
     },
+    AUTO_DECLINE: {
+        icon: SVG_ICONS.xOctagon, class: 'verdict-decline',
+        label: 'Auto Declined',
+        explanation: 'Dempster-Shafer resolved uncertainty to confirm high-confidence fraud. Transaction auto-blocked.',
+    },
+    PEND: {
+        icon: SVG_ICONS.pauseCircle, class: 'verdict-abstain',
+        label: 'Pending Decision (PEND)',
+        explanation: 'Unresolved uncertainty detected. Held in pending state with automated reason codes.',
+    }
 };
 
 // ---- Preset Demo Payloads ----
 // Instead of brute-forcing (random features never trigger high fraud scores),
 // presets construct realistic demo responses that show what each decision looks like.
 // "Generate Random" still calls the real API.
-function buildDemoPayload(decision, riskScore, uncertainty, noveltyFlag, anomalyScore) {
-    const tier = riskScore >= 0.80 ? 'high_risk' : riskScore >= 0.30 ? 'medium_risk' : 'low_risk';
-    const reviewDecisions = ['STEP_UP_AUTH', 'ESCALATE_INVEST', 'ABSTAIN'];
-    const manualCost = reviewDecisions.includes(decision) ? 20.0 : 0.0;
-    const expectedLoss = riskScore * 1000;
-
-    return {
-        decision,
-        risk_score: riskScore,
-        uncertainty,
-        novelty_flag: noveltyFlag,
-        tier,
-        costs: {
-            expected_loss: expectedLoss,
-            manual_review_cost: manualCost,
-            net_utility: -expectedLoss - manualCost,
-        },
-        explanations: {
-            anomaly_score: anomalyScore,
-            top_features: [],
-        },
-        meta: {
-            model_version: 'xgb_ensemble_v2',
-            uncertainty_method: 'bootstrap_std',
-            timestamp: new Date().toISOString(),
-        },
-    };
-}
-
 const PRESET_DEMOS = {
-    approve: () => ({
-        features: [36000 + Math.random() * 10000, ...Array.from({ length: 29 }, () => gaussRand() * 0.3), 25 + Math.random() * 50],
-        payload: buildDemoPayload('APPROVE', 0.0003 + Math.random() * 0.005, 0.0001 + Math.random() * 0.001, false, 0.22 + Math.random() * 0.1),
-    }),
-    stepup: () => ({
-        features: [50000 + Math.random() * 20000, ...Array.from({ length: 29 }, () => gaussRand() * 1.5), 400 + Math.random() * 600],
-        payload: buildDemoPayload('STEP_UP_AUTH', 0.45 + Math.random() * 0.15, 0.008 + Math.random() * 0.008, false, 0.10 + Math.random() * 0.08),
-    }),
-    abstain: () => ({
-        features: [10000 + Math.random() * 5000, ...Array.from({ length: 29 }, () => gaussRand() * 1.2), 50 + Math.random() * 200],
-        payload: buildDemoPayload('ABSTAIN', 0.12 + Math.random() * 0.10, 0.025 + Math.random() * 0.02, false, 0.15 + Math.random() * 0.1),
-    }),
-    escalate: () => ({
-        features: [3600 + Math.random() * 3000, ...Array.from({ length: 29 }, () => gaussRand() * 2.5), 1500 + Math.random() * 2000],
-        payload: buildDemoPayload('ESCALATE_INVEST', 0.72 + Math.random() * 0.10, 0.035 + Math.random() * 0.03, true, -0.15 + Math.random() * 0.05),
-    }),
-    decline: () => ({
-        features: [1800 + Math.random() * 2000, ...Array.from({ length: 29 }, () => gaussRand() * 3), 3000 + Math.random() * 2000],
-        payload: buildDemoPayload('DECLINE', 0.88 + Math.random() * 0.10, 0.005 + Math.random() * 0.01, false, 0.05 + Math.random() * 0.08),
-    }),
+    approve: () => [160760.0, -0.674466064578314, 1.40810501967799, -1.11062205357093, -1.32836577843066, 1.38899603254837, -1.30843906707795, 1.88587890268717, -0.614232966299775, 0.311652212453101, 0.65075700363522, -0.857784661547805, -0.229961445775592, -0.19981700479103, 0.266371326329879, -0.0465441684754424, -0.741398089749789, -0.605616644106022, -0.39256818789208, -0.162648311024695, 0.394321820843914, 0.0800842396026648, 0.810033595602455, -0.224327230436412, 0.707899237446867, -0.13583702273753, 0.0451021964988772, 0.533837219064273, 0.291319252625364, 23.0, 0.0],
+    decline: () => [57007.0, -1.27124419171437, 2.46267526851135, -2.85139500331783, 2.3244800653478, -1.37224488981369, -0.948195686538643, -3.06523436172054, 1.16692694787211, -2.26877058844813, -4.88114292689057, 2.25514748870463, -4.68638689759229, 0.652374668512965, -6.17428834800643, 0.594379608016446, -4.84969238709652, -6.53652073527011, -3.11909388163881, 1.71549441975915, 0.560478075726644, 0.652941051330455, 0.0819309763507574, -0.221347831198339, -0.523582159233306, 0.224228161862968, 0.756334522703558, 0.632800477330469, 0.250187092757197, 0.01, 0.0],
+    stepup: () => [26217.0, -17.9506309618309, 11.0670686608049, -20.7426595223452, 6.07553050760549, -13.3897649672385, -4.53288835377002, -15.1881457975285, 12.1010620553144, -4.02687989330881, -9.01741297442937, 6.07064975176212, -8.56786450085983, -0.0019002661806679, -9.30123300164911, 0.0197959820179134, -7.35212004645984, -13.923225303931, -4.98830380644959, 1.34765631107896, 1.71290938237055, 1.7971341252338, -1.27567465936041, -0.705045810296498, 0.102039840024336, 1.17747721389029, -0.23873007615266, 1.55446335204436, 0.547947820129286, 1.0, 3.0],
+    abstain: () => [141487.0, 1.44743458080402, 0.138511183635237, -0.576768746002758, 4.24487022367047, -0.102371423150805, 0.578114987371433, -0.701464590994561, 0.369376729649194, -0.351267603151895, 0.161401713773405, 1.00912477307042, -0.180862634373815, 0.125546518064188, -3.43097834029619, -0.361421339544459, 2.999298180107, 0.886773431995449, 2.39897191611555, -2.10108736045659, 0.209728844087776, 0.189460105978499, 0.233639104982466, 0.0106652506766296, -0.630912006329531, -0.547101109385506, -0.0451407490684571, 0.0493892975579404, 0.0692335501352738, 179.63, 0.0],
+    escalate: () => [128759.0, -1.2721170378153, 1.82761538129723, -3.81060977838022, 0.583759429066067, -0.641241659911406, -1.38904348579078, -1.95405395436729, 1.17391997369635, -2.05319134425828, -3.34506130667145, 2.37640423683332, -2.53805206931871, -0.0904541466730078, -2.42616754529086, -1.61864781114481, -3.51594398365266, -6.19900773693385, -2.41060577215255, 0.760435151630973, -0.0272684521661314, 0.858998001255691, 0.858774883586953, 0.0830791493463243, 0.741676007542821, -0.173233871025323, 0.534870071750152, 0.183562195629891, 0.0203162223012201, 0.76, 0.0],
 };
 
 // ---- State ----
@@ -123,8 +104,10 @@ function gaussRand() {
 function generateRandomTransaction() {
     const time = Math.random() * 172800;
     const amount = Math.random() * 4999 + 1;
-    const pca = Array.from({ length: 29 }, () => gaussRand());
-    return [time, ...pca, amount];
+    const pca = Array.from({ length: 28 }, () => gaussRand());
+    const lastTxnTime = history.length > 0 ? history[0].features[0] : time;
+    const deltaTime = Math.max(0, time - lastTxnTime);
+    return [time, ...pca, amount, deltaTime];
 }
 
 function formatCurrency(val) {
@@ -144,7 +127,9 @@ function formatTime(seconds) {
 async function callAPI(features) {
     // Try proxy first (Vite dev), fall back to direct
     let lastErr;
-    for (const url of [API_URL, DIRECT_API_URL]) {
+    const versionSelect = document.getElementById('versionSelect');
+    const version = versionSelect ? versionSelect.value : 'V4';
+    for (const url of [API_URL(version), DIRECT_API_URL(version)]) {
         try {
             const res = await fetch(url, {
                 method: 'POST',
@@ -196,7 +181,7 @@ function showState(state) {
 
 function renderAnalysis(features, payload) {
     // Transaction Summary
-    $('#txnAmount').textContent = `$${features[features.length - 1].toFixed(2)}`;
+    $('#txnAmount').textContent = `$${features[features.length - 2].toFixed(2)}`;
     $('#txnTime').textContent = formatTime(features[0]);
 
     // Layer 1: Risk
@@ -304,9 +289,9 @@ function renderAnalysis(features, payload) {
     $('#verdictDecision').textContent = decision.replace(/_/g, ' ');
     $('#verdictExplanation').textContent = meta.explanation;
 
-    // Routing rule
-    const rule = buildRoutingRule(risk, uncertainty, noveltyFlag, decision);
-    $('#verdictRule').textContent = rule;
+    // Routing rule - fetched directly from API trace for active version
+    const trace = payload.trace || {};
+    $('#verdictRule').textContent = trace.rule_triggered || '—';
 
     // Cost
     const costs = payload.costs || {};
@@ -320,6 +305,80 @@ function renderAnalysis(features, payload) {
     $('#metaMethod').textContent = pmeta.uncertainty_method || '—';
     $('#metaTimestamp').textContent = pmeta.timestamp || '—';
 
+    // RENDER X-RAY DETAIL PANEL
+    const v1Dec = trace.v1_decision;
+    const v2Dec = trace.v2_decision;
+    const v2Prob = trace.v2_svm_prob;
+    
+    // V2 Second Opinion Trace
+    $('#xrayV2Prob').textContent = v2Prob != null ? v2Prob.toFixed(6) : '0.000000';
+    const v2Badge = $('#xrayV2Status');
+    if (v1Dec === 'ABSTAIN') {
+        if (v2Dec === 'APPROVE') {
+            v2Badge.textContent = 'Cleared to APPROVE';
+            v2Badge.className = 'xray-status-badge tier-low';
+        } else {
+            v2Badge.textContent = 'Retained as ABSTAIN';
+            v2Badge.className = 'xray-status-badge tier-medium';
+        }
+    } else {
+        v2Badge.textContent = 'Not Applicable';
+        v2Badge.className = 'xray-status-badge';
+    }
+
+    // V3 Dempster-Shafer Trace
+    const v3Dec = trace.v3_decision;
+    const belF = trace.ds_bel_F;
+    const ign = trace.ds_ignorance;
+    const K = trace.ds_conflict_K;
+    const xrayV3 = $('#xrayV3');
+    
+    if (v2Dec === 'ESCALATE_INVEST') {
+        xrayV3.style.opacity = '1';
+        $('#xrayV3Belief').textContent = belF != null ? belF.toFixed(6) : '0.000000';
+        $('#xrayV3Ignorance').textContent = ign != null ? ign.toFixed(6) : '0.000000';
+        $('#xrayV3Conflict').textContent = K != null ? K.toFixed(6) : '0.000000';
+    } else {
+        xrayV3.style.opacity = '0.4';
+        $('#xrayV3Belief').textContent = '—';
+        $('#xrayV3Ignorance').textContent = '—';
+        $('#xrayV3Conflict').textContent = '—';
+    }
+
+    // V4 SHAP Explanation Trace
+    const v4Dec = trace.v4_decision;
+    const reasonCode = trace.shap_reason_code;
+    const shapFeatures = trace.shap_features || [];
+    const xrayV4 = $('#xrayV4');
+    const v4ReasonEl = $('#xrayV4Reason');
+    const v4ChartEl = $('#xrayV4ShapChart');
+    
+    if (v4Dec === 'PEND') {
+        xrayV4.style.opacity = '1';
+        v4ReasonEl.textContent = reasonCode || 'PEND_UNRESOLVED';
+        
+        v4ChartEl.innerHTML = shapFeatures.map(f => {
+            const absVal = Math.abs(f.value);
+            const pct = Math.min(100, Math.max(5, (absVal / 0.8) * 100)); // scale max 0.8 log-odds to 100%
+            const barClass = f.value > 0 ? 'shap-bar-pos' : 'shap-bar-neg';
+            const arrow = f.value > 0 ? '▲' : '▼';
+            
+            return `<div class="shap-row">
+                <div class="shap-feat-label">
+                    <span>${f.feature} (${arrow})</span>
+                    <span class="mono">${f.value > 0 ? '+' : ''}${f.value.toFixed(4)}</span>
+                </div>
+                <div class="shap-bar-container">
+                    <div class="shap-bar ${barClass}" style="width: ${pct}%"></div>
+                </div>
+            </div>`;
+        }).join('');
+    } else {
+        xrayV4.style.opacity = '0.4';
+        v4ReasonEl.textContent = 'Not Applicable';
+        v4ChartEl.innerHTML = '';
+    }
+
     // Plot on landscape
     plotTransaction(risk, uncertainty, decision);
 
@@ -330,30 +389,30 @@ function renderAnalysis(features, payload) {
     addToHistory(features, payload);
 }
 
-function buildRoutingRule(risk, uncertainty, noveltyFlag, decision) {
-    const r = risk.toFixed(2);
-    const u = uncertainty.toFixed(4);
-    switch (decision) {
-        case 'DECLINE':
-            return `Rule 1: risk(${r}) ≥ 0.80 AND uncertainty(${u}) < 0.02 → DECLINE`;
-        case 'ESCALATE_INVEST':
-            if (noveltyFlag)
-                return `Rule 5: novelty_flag=true → ESCALATE_INVEST`;
-            return `Rule 2: risk(${r}) ≥ 0.60 AND uncertainty(${u}) ≥ 0.02 → ESCALATE_INVEST`;
-        case 'STEP_UP_AUTH':
-            return `Rule 3: 0.30 ≤ risk(${r}) < 0.80 → STEP_UP_AUTH`;
-        case 'ABSTAIN':
-            return `Rule 4: risk(${r}) < 0.30 AND uncertainty(${u}) ≥ 0.02 → ABSTAIN`;
-        case 'APPROVE':
-            return `Rule 6: Default — low risk, low uncertainty, not novel → APPROVE`;
-        default:
-            return '—';
-    }
-}
-
 function animateLayers() {
-    const layers = ['txnSummary', 'layer1', 'layer2', 'layer3', 'flowConnector', 'verdictCard'];
-    const delays = [0, 200, 500, 800, 1100, 1300];
+    const layers = ['txnSummary', 'layer1', 'layer2', 'layer3', 'flowConnector', 'verdictCard', 'xrayPanel'];
+    const delays = [0, 200, 500, 800, 1100, 1300, 1500];
+
+    // First reset all to hidden
+    layers.forEach(id => {
+        const el = $(`#${id}`);
+        if (el) {
+            el.classList.remove('layer-visible');
+            el.classList.add('layer-hidden');
+        }
+    });
+
+    // Then reveal sequentially
+    layers.forEach((id, i) => {
+        setTimeout(() => {
+            const el = $(`#${id}`);
+            if (el) {
+                el.classList.remove('layer-hidden');
+                el.classList.add('layer-visible');
+            }
+        }, delays[i]);
+    });
+}
 
     // First reset all to hidden
     layers.forEach(id => {
@@ -376,7 +435,7 @@ function addToHistory(features, payload) {
     const entry = {
         decision: payload.decision,
         risk: payload.risk_score,
-        amount: features[features.length - 1],
+        amount: features[features.length - 2],
         features,
         payload,
     };
@@ -394,14 +453,14 @@ function renderHistory() {
 
     list.innerHTML = history.map((h, i) => {
         const meta = DECISION_META[h.decision] || DECISION_META.APPROVE;
-        const colorVar = `var(--color-${h.decision === 'APPROVE' ? 'approve' :
-            h.decision === 'ABSTAIN' ? 'abstain' :
-                h.decision === 'STEP_UP_AUTH' ? 'stepup' :
-                    h.decision === 'ESCALATE_INVEST' ? 'escalate' : 'decline'})`;
-        const bgVar = `var(--color-${h.decision === 'APPROVE' ? 'approve' :
-            h.decision === 'ABSTAIN' ? 'abstain' :
-                h.decision === 'STEP_UP_AUTH' ? 'stepup' :
-                    h.decision === 'ESCALATE_INVEST' ? 'escalate' : 'decline'}-bg)`;
+        const colorVar = `var(--color-${h.decision.includes('APPROVE') ? 'approve' :
+            (h.decision === 'ABSTAIN' || h.decision === 'PEND') ? 'abstain' :
+                h.decision.includes('STEP_UP') ? 'stepup' :
+                    h.decision.includes('ESCALATE') ? 'escalate' : 'decline'})`;
+        const bgVar = `var(--color-${h.decision.includes('APPROVE') ? 'approve' :
+            (h.decision === 'ABSTAIN' || h.decision === 'PEND') ? 'abstain' :
+                h.decision.includes('STEP_UP') ? 'stepup' :
+                    h.decision.includes('ESCALATE') ? 'escalate' : 'decline'}-bg)`;
 
         return `<div class="history-item" data-index="${i}">
       <span class="history-risk">${h.risk.toFixed(4)}</span>
@@ -431,14 +490,12 @@ async function handleGenerate(features, isPreset = false, presetName = null) {
         let payload;
 
         if (isPreset && presetName && PRESET_DEMOS[presetName]) {
-            // Presets use instant demo payloads — no API call needed
-            const demo = PRESET_DEMOS[presetName]();
-            features = demo.features;
-            payload = demo.payload;
-        } else {
-            // Generate Random uses the real API
-            payload = await callAPI(features);
+            // Preset returns raw feature vector
+            features = PRESET_DEMOS[presetName]();
         }
+        
+        // Evaluate the raw transaction with the real backend API
+        payload = await callAPI(features);
 
         showState('analysis');
         renderAnalysis(features, payload);
@@ -497,6 +554,14 @@ function init() {
     $('#btnGenerate').addEventListener('click', () => {
         const features = generateRandomTransaction();
         handleGenerate(features);
+    });
+
+    // Version dropdown change triggers re-evaluation of the current active transaction
+    $('#versionSelect').addEventListener('change', () => {
+        if (history.length > 0) {
+            const currentTxn = history[0];
+            handleGenerate(currentTxn.features);
+        }
     });
 
     // Preset buttons

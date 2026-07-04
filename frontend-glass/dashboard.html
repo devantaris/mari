@@ -54,6 +54,12 @@
         </a>
       </div>
       <div class="header-status-row">
+        <select class="version-select" id="versionSelect">
+          <option value="V1">V1: Baseline (5-State)</option>
+          <option value="V2">V2: SVM Second Opinion</option>
+          <option value="V3">V3: Dempster-Shafer Fusion</option>
+          <option value="V4" selected>V4: Collapsed (4-State + SHAP)</option>
+        </select>
         <div class="status-indicator" id="apiStatus">
           <span class="status-dot"></span>
           <span class="status-text">Checking API…</span>
@@ -393,6 +399,48 @@
               <div class="cost-item cost-item-total">
                 <span class="cost-label">Net Utility</span>
                 <span class="cost-value mono" id="costUtility">—</span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- X-RAY AUDIT PANEL -->
+        <div class="xray-panel glass-card layer-hidden" id="xrayPanel">
+          <h3 class="xray-title">System Audit (X-Ray Trace)</h3>
+          <div class="xray-sections">
+            <!-- V2 SVM Opinion Section -->
+            <div class="xray-section" id="xrayV2">
+              <div class="xray-section-header">V2 SVM Second Opinion</div>
+              <div class="xray-metric-row">
+                <span class="xray-label">SVM P(fraud):</span>
+                <span class="xray-value mono" id="xrayV2Prob">—</span>
+              </div>
+              <div class="xray-status-badge" id="xrayV2Status">—</div>
+            </div>
+
+            <!-- V3 D-S Belief Section -->
+            <div class="xray-section" id="xrayV3">
+              <div class="xray-section-header">V3 Dempster-Shafer Fusion</div>
+              <div class="xray-metric-row">
+                <span class="xray-label">Belief (F):</span>
+                <span class="xray-value mono" id="xrayV3Belief">—</span>
+              </div>
+              <div class="xray-metric-row">
+                <span class="xray-label">Ignorance:</span>
+                <span class="xray-value mono" id="xrayV3Ignorance">—</span>
+              </div>
+              <div class="xray-metric-row">
+                <span class="xray-label">Conflict (K):</span>
+                <span class="xray-value mono" id="xrayV3Conflict">—</span>
+              </div>
+            </div>
+
+            <!-- V4 SHAP Section -->
+            <div class="xray-section" id="xrayV4">
+              <div class="xray-section-header">V4 PEND SHAP Explanations</div>
+              <div class="xray-reason-code" id="xrayV4Reason">—</div>
+              <div class="shap-chart" id="xrayV4ShapChart">
+                <!-- Mini horizontal bar chart elements will be dynamically injected here -->
               </div>
             </div>
           </div>

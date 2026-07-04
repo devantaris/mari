@@ -37,13 +37,13 @@ def root():
 
 
 @app.get("/health")
-def health():
-    return {"status": "ok", "model": "xgb_ensemble_v2"}
+def health(version: str = "V4"):
+    return {"status": "ok", "model": f"xgb_ensemble_{version.lower()}"}
 
 
 @app.post("/predict")
-def predict(txn: TransactionInput):
+def predict(txn: TransactionInput, version: str = "V4"):
     if len(txn.features) != 31:
         return {"error": "Expected 31 features"}
     features = np.array(txn.features).reshape(1, -1)
-    return engine.evaluate_transaction(features)
+    return engine.evaluate_transaction(features, version=version)

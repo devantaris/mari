@@ -1743,3 +1743,144 @@ body::after {
   border: none;
   flex: 1;
 }
+
+/* ---- Pipeline Version Select ---- */
+.version-select {
+  background: var(--bg-card);
+  border: 1px solid var(--border-glass);
+  color: var(--text-primary);
+  padding: 6px 14px;
+  border-radius: var(--radius-pill);
+  font-size: 0.72rem;
+  font-weight: 600;
+  cursor: pointer;
+  outline: none;
+  transition: all var(--transition-fast);
+  margin-right: var(--space-sm);
+}
+
+.version-select:hover {
+  border-color: var(--border-glass-hover);
+  background: var(--bg-glass-hover);
+}
+
+/* ---- X-RAY AUDIT PANEL ---- */
+.xray-panel {
+  padding: var(--space-lg);
+  margin-top: var(--space-lg);
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-md);
+}
+
+.xray-title {
+  font-size: 0.8rem;
+  font-weight: 700;
+  color: var(--text-primary);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  border-bottom: 1px solid var(--border-glass);
+  padding-bottom: var(--space-xs);
+}
+
+.xray-sections {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  gap: var(--space-lg);
+}
+
+.xray-section {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-xs);
+  background: rgba(255, 255, 255, 0.02);
+  padding: var(--space-md);
+  border-radius: var(--radius-card);
+  border: 1px solid rgba(255, 255, 255, 0.03);
+}
+
+.xray-section-header {
+  font-size: 0.7rem;
+  font-weight: 700;
+  color: var(--text-secondary);
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  margin-bottom: var(--space-xs);
+}
+
+.xray-metric-row {
+  display: flex;
+  justify-content: space-between;
+  font-size: 0.75rem;
+}
+
+.xray-label {
+  color: var(--text-tertiary);
+}
+
+.xray-value {
+  color: var(--text-primary);
+  font-weight: 600;
+}
+
+.xray-status-badge {
+  display: inline-block;
+  align-self: flex-start;
+  padding: 2px 8px;
+  border-radius: var(--radius-pill);
+  font-size: 0.65rem;
+  font-weight: 600;
+  margin-top: var(--space-xs);
+}
+
+.xray-reason-code {
+  font-family: var(--font-mono);
+  font-size: 0.68rem;
+  color: #a855f7;
+  text-shadow: 0 0 5px rgba(168, 85, 247, 0.3);
+  margin-bottom: var(--space-xs);
+  word-break: break-all;
+}
+
+.shap-chart {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-xs);
+  margin-top: var(--space-xs);
+}
+
+.shap-row {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.shap-feat-label {
+  display: flex;
+  justify-content: space-between;
+  font-size: 0.64rem;
+  color: var(--text-tertiary);
+}
+
+.shap-bar-container {
+  height: 6px;
+  background: rgba(255, 255, 255, 0.05);
+  border-radius: 3px;
+  overflow: hidden;
+  position: relative;
+}
+
+.shap-bar {
+  height: 100%;
+  border-radius: 3px;
+}
+
+.shap-bar-pos {
+  background: var(--color-decline);
+  box-shadow: 0 0 5px var(--color-decline-bg);
+}
+
+.shap-bar-neg {
+  background: var(--color-approve);
+  box-shadow: 0 0 5px var(--color-approve-bg);
+}

@@ -13,34 +13,54 @@ let isDark = true;
 const REGION_COLORS = {
     dark: {
         APPROVE: { fill: 'rgba(0, 255, 204, 0.1)', border: 'rgba(0, 255, 204, 0.4)' },
+        AUTO_APPROVE: { fill: 'rgba(0, 255, 204, 0.1)', border: 'rgba(0, 255, 204, 0.4)' },
         ABSTAIN: { fill: 'rgba(189, 0, 255, 0.1)', border: 'rgba(189, 0, 255, 0.4)' },
+        PEND: { fill: 'rgba(189, 0, 255, 0.1)', border: 'rgba(189, 0, 255, 0.4)' },
         STEP_UP_AUTH: { fill: 'rgba(255, 170, 0, 0.1)', border: 'rgba(255, 170, 0, 0.4)' },
+        STEP_UP: { fill: 'rgba(255, 170, 0, 0.1)', border: 'rgba(255, 170, 0, 0.4)' },
         ESCALATE_INVEST: { fill: 'rgba(255, 51, 102, 0.1)', border: 'rgba(255, 51, 102, 0.4)' },
+        HUMAN_ESCALATE: { fill: 'rgba(255, 51, 102, 0.1)', border: 'rgba(255, 51, 102, 0.4)' },
         DECLINE: { fill: 'rgba(255, 0, 51, 0.1)', border: 'rgba(255, 0, 51, 0.4)' },
+        AUTO_DECLINE: { fill: 'rgba(255, 0, 51, 0.1)', border: 'rgba(255, 0, 51, 0.4)' },
     },
     light: {
         APPROVE: { fill: 'rgba(0, 255, 204, 0.15)', border: 'rgba(0, 255, 204, 0.6)' },
+        AUTO_APPROVE: { fill: 'rgba(0, 255, 204, 0.15)', border: 'rgba(0, 255, 204, 0.6)' },
         ABSTAIN: { fill: 'rgba(189, 0, 255, 0.15)', border: 'rgba(189, 0, 255, 0.6)' },
+        PEND: { fill: 'rgba(189, 0, 255, 0.15)', border: 'rgba(189, 0, 255, 0.6)' },
         STEP_UP_AUTH: { fill: 'rgba(255, 170, 0, 0.15)', border: 'rgba(255, 170, 0, 0.6)' },
+        STEP_UP: { fill: 'rgba(255, 170, 0, 0.15)', border: 'rgba(255, 170, 0, 0.6)' },
         ESCALATE_INVEST: { fill: 'rgba(255, 51, 102, 0.15)', border: 'rgba(255, 51, 102, 0.6)' },
+        HUMAN_ESCALATE: { fill: 'rgba(255, 51, 102, 0.15)', border: 'rgba(255, 51, 102, 0.6)' },
         DECLINE: { fill: 'rgba(255, 0, 51, 0.15)', border: 'rgba(255, 0, 51, 0.6)' },
+        AUTO_DECLINE: { fill: 'rgba(255, 0, 51, 0.15)', border: 'rgba(255, 0, 51, 0.6)' },
     },
 };
 
 const DOT_COLORS = {
     dark: {
         APPROVE: '#00ffcc',
+        AUTO_APPROVE: '#00ffcc',
         ABSTAIN: '#bd00ff',
+        PEND: '#bd00ff',
         STEP_UP_AUTH: '#ffaa00',
+        STEP_UP: '#ffaa00',
         ESCALATE_INVEST: '#ff3366',
+        HUMAN_ESCALATE: '#ff3366',
         DECLINE: '#ff0033',
+        AUTO_DECLINE: '#ff0033',
     },
     light: {
         APPROVE: '#059669',
+        AUTO_APPROVE: '#059669',
         ABSTAIN: '#7c3aed',
+        PEND: '#7c3aed',
         STEP_UP_AUTH: '#d97706',
+        STEP_UP: '#d97706',
         ESCALATE_INVEST: '#dc2626',
+        HUMAN_ESCALATE: '#dc2626',
         DECLINE: '#b91c1c',
+        AUTO_DECLINE: '#b91c1c',
     },
 };
 
@@ -81,12 +101,19 @@ function uncToY(unc) {
 function drawRegions() {
     const theme = isDark ? 'dark' : 'light';
     const colors = REGION_COLORS[theme];
-    const { y, h } = getPlotArea();
+    const versionSelect = document.getElementById('versionSelect');
+    const version = versionSelect ? versionSelect.value : 'V4';
+
+    const approveLabel = 'APPROVE';
+    const abstainLabel = (version === 'V4') ? 'PEND' : 'ABSTAIN';
+    const stepupLabel = (version === 'V4') ? 'STEP_UP' : 'STEP_UP_AUTH';
+    const escalateLabel = (version === 'V4') ? 'HUMAN_ESCALATE' : 'ESCALATE_INVEST';
+    const declineLabel = 'DECLINE';
 
     const regions = [
         // APPROVE: risk < 0.30, uncertainty < 0.02
         {
-            decision: 'APPROVE',
+            decision: approveLabel,
             path: () => {
                 ctx.beginPath();
                 ctx.moveTo(riskToX(0), uncToY(0));
@@ -96,9 +123,9 @@ function drawRegions() {
                 ctx.closePath();
             },
         },
-        // ABSTAIN: risk < 0.30, uncertainty >= 0.02
+        // ABSTAIN / PEND: risk < 0.30, uncertainty >= 0.02
         {
-            decision: 'ABSTAIN',
+            decision: abstainLabel,
             path: () => {
                 ctx.beginPath();
                 ctx.moveTo(riskToX(0), uncToY(U_THRESHOLD));
@@ -108,10 +135,10 @@ function drawRegions() {
                 ctx.closePath();
             },
         },
-        // STEP_UP_AUTH: 0.30 <= risk < 0.60, any uncertainty
+        // STEP_UP_AUTH / STEP_UP: 0.30 <= risk < 0.60, any uncertainty
         // and 0.60 <= risk < 0.80, uncertainty < 0.02
         {
-            decision: 'STEP_UP_AUTH',
+            decision: stepupLabel,
             path: () => {
                 ctx.beginPath();
                 // Left block: 0.30 to 0.60, full height
@@ -131,9 +158,9 @@ function drawRegions() {
                 ctx.closePath();
             },
         },
-        // ESCALATE_INVEST: risk >= 0.60, uncertainty >= 0.02
+        // ESCALATE / D-S Sub-Routing: risk >= 0.60, uncertainty >= 0.02
         {
-            decision: 'ESCALATE_INVEST',
+            decision: escalateLabel,
             path: () => {
                 ctx.beginPath();
                 ctx.moveTo(riskToX(T_ESCALATE), uncToY(U_THRESHOLD));
@@ -145,7 +172,7 @@ function drawRegions() {
         },
         // DECLINE: risk >= 0.80, uncertainty < 0.02
         {
-            decision: 'DECLINE',
+            decision: declineLabel,
             path: () => {
                 ctx.beginPath();
                 ctx.moveTo(riskToX(T_DECLINE), uncToY(0));
@@ -159,12 +186,14 @@ function drawRegions() {
 
     regions.forEach(r => {
         const c = colors[r.decision];
-        ctx.fillStyle = c.fill;
-        ctx.strokeStyle = c.border;
-        ctx.lineWidth = 1;
-        r.path();
-        ctx.fill();
-        ctx.stroke();
+        if (c) {
+            ctx.fillStyle = c.fill;
+            ctx.strokeStyle = c.border;
+            ctx.lineWidth = 1;
+            r.path();
+            ctx.fill();
+            ctx.stroke();
+        }
     });
 }
 

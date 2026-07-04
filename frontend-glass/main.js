@@ -414,22 +414,6 @@ function animateLayers() {
     });
 }
 
-    // First reset all to hidden
-    layers.forEach(id => {
-        const el = $(`#${id}`);
-        el.classList.remove('layer-visible');
-        el.classList.add('layer-hidden');
-    });
-
-    // Then reveal sequentially
-    layers.forEach((id, i) => {
-        setTimeout(() => {
-            const el = $(`#${id}`);
-            el.classList.remove('layer-hidden');
-            el.classList.add('layer-visible');
-        }, delays[i]);
-    });
-}
 
 function addToHistory(features, payload) {
     const entry = {

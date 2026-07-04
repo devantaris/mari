@@ -4,9 +4,9 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Risk-Aware Fraud Decision System</title>
+  <title>MARI — Research Laboratory</title>
   <meta name="description"
-    content="Decision-theoretic transaction routing system using calibrated risk, bootstrap uncertainty, and novelty detection." />
+    content="Interactive research laboratory for a 4-version selective classification framework. Run experiments, observe evidence flow, and audit every decision." />
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link
@@ -20,9 +20,12 @@
   <!-- ===== HEADER ===== -->
   <header class="app-header">
     <div class="header-left">
+      <a href="/" class="back-to-research" title="Back to Research">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M19 12H5M12 19l-7-7 7-7"/></svg>
+      </a>
       <div class="header-title-block">
-        <h1 class="logo">Risk-Aware Fraud Decision System</h1>
-        <p class="tagline">Risk × Uncertainty × Novelty - Transaction X-Ray</p>
+        <h1 class="logo">MARI <span class="logo-sub">Research Laboratory</span></h1>
+        <p class="tagline">Selective Classification · Evidence Fusion · Explainability</p>
       </div>
     </div>
     <div class="header-right">
@@ -244,11 +247,90 @@
     <!-- CENTER PANEL — Layered X-Ray -->
     <section class="panel panel-analysis" id="analysisPanel">
 
+      <!-- Version Research Context -->
+      <div class="version-context glass-card" id="versionContext">
+        <div class="version-context-header">
+          <span class="version-context-badge" id="versionContextBadge">V4</span>
+          <span class="version-context-title" id="versionContextTitle">Terminal State Collapse + SHAP</span>
+          <button class="foundations-toggle" id="foundationsToggle" title="Toggle Mathematical Foundations">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"/><path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"/></svg>
+            Foundations
+          </button>
+        </div>
+        <p class="version-context-desc" id="versionContextDesc">All intermediate states collapse into 4 terminal actions. Every uncertain case receives a SHAP reason code.</p>
+      </div>
+
+      <!-- Foundations Drawer -->
+      <div class="foundations-drawer hidden" id="foundationsDrawer">
+        <div class="foundations-inner">
+          <div class="foundations-section" id="foundationsContent">
+            <h4>Mathematical Foundations</h4>
+            <div class="formula-block">
+              <div class="formula-label">Risk Score (Calibrated Ensemble Mean)</div>
+              <div class="formula mono">r̂ = (1/B) Σᵢ₌₁ᴮ σ(fᵢ(x)) , B = 5</div>
+            </div>
+            <div class="formula-block">
+              <div class="formula-label">Predictive Uncertainty</div>
+              <div class="formula mono">û = √[(1/(B-1)) Σᵢ₌₁ᴮ (σ(fᵢ(x)) − r̂)²]</div>
+            </div>
+            <div class="formula-block">
+              <div class="formula-label">Isolation Forest Novelty</div>
+              <div class="formula mono">s(x) = 2^(−E[h(x)] / c(n))</div>
+              <div class="formula-note">Novel if decision_function(x) &lt; −0.08</div>
+            </div>
+            <div class="formula-block" id="foundationsDS" style="display:none;">
+              <div class="formula-label">Dempster-Shafer Combination Rule</div>
+              <div class="formula mono">m₁₂(A) = [Σ_{B∩C=A} m₁(B)·m₂(C)] / (1 − K)</div>
+              <div class="formula mono">K = Σ_{B∩C=∅} m₁(B)·m₂(C)</div>
+              <div class="formula-note">K ≥ 0.25 → HUMAN_ESCALATE (high evidence conflict)</div>
+            </div>
+            <div class="formula-block" id="foundationsSHAP" style="display:none;">
+              <div class="formula-label">SHAP Explanation (Shapley Values)</div>
+              <div class="formula mono">f(x) = E[f(X)] + Σⱼ₌₁ᴹ φⱼ(x)</div>
+              <div class="formula-note">Top-3 |φⱼ| features form the reason code for PEND cases</div>
+            </div>
+          </div>
+          <div class="foundations-section">
+            <h4>Decision Thresholds</h4>
+            <table class="threshold-table">
+              <thead><tr><th>Parameter</th><th>Threshold</th><th>Effect</th></tr></thead>
+              <tbody>
+                <tr><td>Risk (low)</td><td class="mono">0.30</td><td>Below → safe zone</td></tr>
+                <tr><td>Risk (high)</td><td class="mono">0.60</td><td>Above → danger zone</td></tr>
+                <tr><td>Risk (critical)</td><td class="mono">0.80</td><td>Above → auto-decline</td></tr>
+                <tr><td>Uncertainty</td><td class="mono">0.02</td><td>Above → model disagreement</td></tr>
+                <tr><td>Novelty</td><td class="mono">−0.08</td><td>Below → novel pattern</td></tr>
+                <tr><td>SVM clear</td><td class="mono">0.01</td><td>Below → safe to approve</td></tr>
+                <tr><td>DS Conflict</td><td class="mono">0.25</td><td>Above → human escalation</td></tr>
+              </tbody>
+            </table>
+          </div>
+          <div class="foundations-section">
+            <h4>Architecture</h4>
+            <div class="arch-flow">
+              <span class="arch-node arch-node-cyan">Bootstrap Ensemble (×5)</span>
+              <span class="arch-arrow">→</span>
+              <span class="arch-node arch-node-purple">Isotonic Calibration</span>
+              <span class="arch-arrow">→</span>
+              <span class="arch-node arch-node-cyan">Risk + Uncertainty</span>
+              <span class="arch-arrow">↓</span>
+            </div>
+            <div class="arch-flow">
+              <span class="arch-node arch-node-pink">Isolation Forest</span>
+              <span class="arch-arrow">→</span>
+              <span class="arch-node arch-node-purple">Decision Engine</span>
+              <span class="arch-arrow">→</span>
+              <span class="arch-node arch-node-green">Terminal Action</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
       <!-- Empty State -->
       <div class="empty-state" id="emptyState">
         <div class="empty-icon">◇</div>
-        <h2>Transaction X-Ray</h2>
-        <p>Generate or select a transaction to see it pass through<br />the three detection layers.</p>
+        <h2>Experiment Chamber</h2>
+        <p>Inject a transaction to observe evidence flow through<br />the detection pipeline.</p>
         <div class="empty-layers">
           <span class="empty-layer">Ensemble Risk</span>
           <span class="empty-arrow">→</span>
@@ -483,9 +565,9 @@
   <!-- ===== FOOTER ===== -->
   <footer class="app-footer">
     <div class="footer-inner">
-      <span class="footer-text">Built by <strong>Devansh Kumar</strong> · devantaris</span>
+      <span class="footer-text">MARI — Built by <strong>Devansh Kumar</strong> · <a href="/" class="footer-link">Back to Research</a></span>
       <div class="footer-links">
-        <a href="https://github.com/devantaris" target="_blank" rel="noopener" aria-label="GitHub"
+        <a href="https://github.com/devantaris/mari" target="_blank" rel="noopener" aria-label="GitHub"
           class="footer-social">
           <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor">
             <path

@@ -519,6 +519,75 @@ function toggleTheme() {
 }
 
 // ---- Init ----
+// ---- Version Context ----
+const VERSION_CONTEXT = {
+    V1: {
+        badge: 'V1',
+        title: 'Selective Classification Engine',
+        desc: '5-state routing: Bootstrap XGBoost ensemble with uncertainty-aware abstention and Isolation Forest novelty detection.',
+        borderColor: '#00E5FF',
+        badgeBg: 'rgba(0, 229, 255, 0.15)',
+        badgeColor: '#00E5FF',
+        badgeBorder: 'rgba(0, 229, 255, 0.3)',
+        showDS: false, showSHAP: false,
+    },
+    V2: {
+        badge: 'V2',
+        title: 'Second Opinion Resolution',
+        desc: 'SVM clears safe abstentions where P(fraud) < 0.01. 26 unnecessary holds resolved at cost-optimal breakeven.',
+        borderColor: '#00A3FF',
+        badgeBg: 'rgba(0, 163, 255, 0.15)',
+        badgeColor: '#00A3FF',
+        badgeBorder: 'rgba(0, 163, 255, 0.3)',
+        showDS: false, showSHAP: false,
+    },
+    V3: {
+        badge: 'V3',
+        title: 'Dempster-Shafer Evidence Fusion',
+        desc: 'Three evidence sources combined via Dempster\'s rule. Conflict (K) and ignorance enable formal sub-routing of escalated cases.',
+        borderColor: '#BD00FF',
+        badgeBg: 'rgba(189, 0, 255, 0.15)',
+        badgeColor: '#BD00FF',
+        badgeBorder: 'rgba(189, 0, 255, 0.3)',
+        showDS: true, showSHAP: false,
+    },
+    V4: {
+        badge: 'V4',
+        title: 'Terminal State Collapse + SHAP',
+        desc: 'All intermediate states collapse into 4 terminal actions. Every uncertain case receives a SHAP reason code.',
+        borderColor: '#FF3366',
+        badgeBg: 'rgba(255, 51, 102, 0.15)',
+        badgeColor: '#FF3366',
+        badgeBorder: 'rgba(255, 51, 102, 0.3)',
+        showDS: true, showSHAP: true,
+    }
+};
+
+function updateVersionContext() {
+    const version = $('#versionSelect')?.value || 'V4';
+    const ctx = VERSION_CONTEXT[version];
+    if (!ctx) return;
+
+    const badge = $('#versionContextBadge');
+    const title = $('#versionContextTitle');
+    const desc = $('#versionContextDesc');
+    const bar = $('#versionContext');
+    const dsBlock = $('#foundationsDS');
+    const shapBlock = $('#foundationsSHAP');
+
+    if (badge) {
+        badge.textContent = ctx.badge;
+        badge.style.background = ctx.badgeBg;
+        badge.style.color = ctx.badgeColor;
+        badge.style.borderColor = ctx.badgeBorder;
+    }
+    if (title) title.textContent = ctx.title;
+    if (desc) desc.textContent = ctx.desc;
+    if (bar) bar.style.borderLeftColor = ctx.borderColor;
+    if (dsBlock) dsBlock.style.display = ctx.showDS ? 'block' : 'none';
+    if (shapBlock) shapBlock.style.display = ctx.showSHAP ? 'block' : 'none';
+}
+
 function init() {
     // Restore theme
     const saved = localStorage.getItem('mari-theme');
@@ -542,11 +611,25 @@ function init() {
 
     // Version dropdown change triggers re-evaluation of the current active transaction
     $('#versionSelect').addEventListener('change', () => {
+        updateVersionContext();
         if (history.length > 0) {
             const currentTxn = history[0];
             handleGenerate(currentTxn.features);
         }
     });
+
+    // Foundations drawer toggle
+    const foundationsToggle = $('#foundationsToggle');
+    const foundationsDrawer = $('#foundationsDrawer');
+    if (foundationsToggle && foundationsDrawer) {
+        foundationsToggle.addEventListener('click', () => {
+            foundationsDrawer.classList.toggle('hidden');
+            foundationsToggle.classList.toggle('active');
+        });
+    }
+
+    // Initialize version context
+    updateVersionContext();
 
     // Preset buttons
     $$('.btn-preset').forEach(btn => {

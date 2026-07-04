@@ -3,8 +3,8 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>MARI - Risk-Aware Fraud Decision System</title>
-  <meta name="description" content="Decision-theoretic transaction routing system using calibrated risk, bootstrap uncertainty, and novelty detection.">
+  <title>MARI — Knowing When Not to Decide</title>
+  <meta name="description" content="A 4-version selective classification framework achieving 100% automation with zero false blocks through calibrated risk, Dempster-Shafer evidence fusion, and SHAP explainability.">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;700&display=swap" rel="stylesheet">
@@ -24,31 +24,33 @@
         <span class="brand-text">MARI</span>
       </div>
       <div class="nav-links">
-        <a href="#architecture">Architecture</a>
-        <a href="docs.html" target="_blank">Documentation</a>
-        <a href="https://github.com/devantaris/risk-aware-fraud-detection" target="_blank" rel="noopener">GitHub</a>
-        <a href="/dashboard" class="btn-primary-sm glow-button">Launch Dashboard</a>
+        <a href="#research">Research</a>
+        <a href="#methodology">Methodology</a>
+        <a href="#results">Results</a>
+        <a href="https://github.com/devantaris/mari" target="_blank" rel="noopener">GitHub</a>
+        <a href="/dashboard" class="btn-primary-sm glow-button">Enter Laboratory</a>
       </div>
     </div>
   </nav>
 
-  <!-- Hero Section -->
+  <!-- ===== HERO ===== -->
   <header class="hero-section">
     <div class="hero-split">
       <div class="hero-content fade-in">
-        <div class="hero-badge mono">XGBOOST BOOTSTRAP ENSEMBLE</div>
-        <h1 class="hero-title">Intelligent Fraud<br><span class="text-gradient">Routing Engine.</span></h1>
+        <div class="hero-badge mono">SELECTIVE CLASSIFICATION · EVIDENCE FUSION · EXPLAINABILITY</div>
+        <h1 class="hero-title">Knowing When<br><span class="text-gradient">Not to Decide.</span></h1>
         <p class="hero-subtitle">
-          A decision-theoretic framework that routes transactions by evaluating not just risk, but the <strong>uncertainty</strong> of its models and the <strong>novelty</strong> of the behavior.
+          A 4-version selective classification framework that routes credit card transactions through calibrated risk, bootstrap uncertainty, Dempster-Shafer evidence fusion, and SHAP explainability — achieving <strong>100% automation</strong> with <strong>zero false blocks</strong>.
         </p>
+        <p class="author-line">Devansh Kumar · Independent Research · 2025</p>
         <div class="hero-actions">
           <a href="/dashboard" class="btn-primary">
-            Launch Dashboard
+            Enter the Laboratory
             <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
               <path d="M5 12h14M12 5l7 7-7 7"/>
             </svg>
           </a>
-          <a href="#architecture" class="btn-secondary">Explore Architecture</a>
+          <a href="#research" class="btn-secondary">Read the Research</a>
         </div>
       </div>
       
@@ -60,89 +62,132 @@
           <div class="card-glow"></div>
         </div>
         <div class="fraud-overlay badge-approve float-1">
-          <span class="dot"></span> LOW RISK
+          <span class="dot"></span> LOW RISK · HIGH CONFIDENCE
         </div>
         <div class="fraud-overlay badge-decline float-2">
-          <span class="dot"></span> HIGH UNCERTAINTY
+          <span class="dot"></span> NOVEL PATTERN · ESCALATE
         </div>
       </div>
     </div>
   </header>
 
-  <!-- Value Proposition / Metrics -->
-  <section class="metrics-section">
+  <!-- ===== HEADLINE METRICS ===== -->
+  <section class="metrics-section" id="results">
     <div class="metrics-container drop-in">
       <div class="metric-card glass-panel">
-        <h3 class="mono text-brand">284K+</h3>
-        <p>Live Transactions Processed</p>
+        <h3 class="mono text-brand">56,962</h3>
+        <p>Test Transactions Verified</p>
       </div>
       <div class="metric-card glass-panel">
-        <h3 class="mono text-brand">31 DIMS</h3>
-        <p>PCA Feature Space</p>
+        <h3 class="mono text-brand" style="color: #00FFCC;">0</h3>
+        <p>False Blocks on Legitimate</p>
       </div>
       <div class="metric-card glass-panel">
-        <h3 class="mono text-brand">5 NODES</h3>
-        <p>Bootstrap Evaluation</p>
+        <h3 class="mono text-brand" style="color: #BD00FF;">100%</h3>
+        <p>V4 Automation Rate</p>
       </div>
       <div class="metric-card glass-panel">
-        <h3 class="mono text-brand">5 DECISIONS</h3>
-        <p>Asymmetric Cost Actions</p>
+        <h3 class="mono text-brand" style="color: #FF3366;">4 Versions</h3>
+        <p>Progressive Enhancement</p>
       </div>
     </div>
   </section>
 
-  <!-- Architecture Section -->
-  <section id="architecture" class="arch-section">
+  <!-- ===== RESEARCH JOURNEY ===== -->
+  <section class="research-section" id="research">
+    <div class="section-header slide-up">
+      <h2 class="section-title">The Research Journey</h2>
+      <p class="section-desc">Each version solves a specific epistemic problem that the previous one couldn't.</p>
+    </div>
+
+    <div class="timeline">
+      <!-- V1 -->
+      <div class="timeline-card slide-up">
+        <span class="version-badge v1">V1 — FOUNDATION</span>
+        <h3>Selective Classification Engine</h3>
+        <p>Bootstrap XGBoost ensemble with Isolation Forest novelty detection. Transactions are routed to 5 states based on calibrated risk, predictive uncertainty, and behavioral novelty.</p>
+        <div class="contribution">💡 The system can say "I don't know" — abstaining when models disagree.</div>
+        <div class="metric-line">5 States · 55 Abstentions · 35 Escalations · 12 Step-Up</div>
+      </div>
+
+      <!-- V2 -->
+      <div class="timeline-card slide-up">
+        <span class="version-badge v2">V2 — RESOLUTION</span>
+        <h3>Second Opinion Resolution</h3>
+        <p>A calibrated SVM provides an independent assessment of abstained cases. If P(fraud) &lt; 0.01, the transaction is safely cleared to APPROVE at the cost-optimal breakeven point.</p>
+        <div class="contribution">💡 26 unnecessary holds resolved. Customer friction reduced without compromising safety.</div>
+        <div class="metric-line">26 Cleared · 29 Remain · Cost-Optimal Breakeven Threshold</div>
+      </div>
+
+      <!-- V3 -->
+      <div class="timeline-card slide-up">
+        <span class="version-badge v3">V3 — FUSION</span>
+        <h3>Dempster-Shafer Evidence Fusion</h3>
+        <p>Three independent evidence sources — ensemble probability, anomaly detector, and calibrated SVM — are combined using Dempster's rule of combination. Conflict and ignorance metrics enable formal sub-routing of escalated cases.</p>
+        <div class="contribution">💡 Escalations decomposed into AUTO_DECLINE, STEP_UP, and HUMAN_ESCALATE using belief functions.</div>
+        <div class="metric-line">6 Auto-Decline · 7 Step-Up · 22 Human Escalate · K ≥ 0.25 → Human</div>
+      </div>
+
+      <!-- V4 -->
+      <div class="timeline-card slide-up">
+        <span class="version-badge v4">V4 — AUTONOMY</span>
+        <h3>Terminal State Collapse + SHAP Explainability</h3>
+        <p>All intermediate states collapse into 4 clean terminal actions. Every uncertain case receives a SHAP reason code identifying the top-3 features driving the decision — full explainability with zero human involvement.</p>
+        <div class="contribution">💡 Zero human involvement. Full explainability. 100% automation achieved.</div>
+        <div class="metric-line">56,841 Approve · 51 Decline · 19 Step-Up · 51 Pend</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===== METHODOLOGY ===== -->
+  <section id="methodology" class="arch-section">
     <div class="arch-container">
       <div class="section-header slide-up">
-        <h2 class="section-title">The Three Pillars of Decision</h2>
-        <p class="section-desc">MARI processes data through three distinct computational layers to determine the most cost-effective routing outcome.</p>
+        <h2 class="section-title">Three Pillars of Decision</h2>
+        <p class="section-desc">MARI evaluates every transaction along three independent epistemic axes before routing to the optimal action.</p>
       </div>
 
       <div class="pipeline-grid">
-        <!-- Layer 1 -->
         <div class="pipeline-card glass-panel zoom-in">
           <div class="card-icon icon-cyan">
             <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"></polyline></svg>
           </div>
-          <h3>Ensemble Risk</h3>
-          <p>Calculates the calibrated fraud probability from an XGBoost bootstrap ensemble. Higher values indicate stronger fraud signals.</p>
+          <h3>Calibrated Risk</h3>
+          <p>Five isotonically calibrated XGBoost models trained on bootstrap resamples. The mean probability is the risk score; the standard deviation is the uncertainty.</p>
         </div>
 
-        <!-- Layer 2 -->
         <div class="pipeline-card glass-panel zoom-in" style="transition-delay: 100ms;">
           <div class="card-icon icon-purple">
             <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M12 2a14.5 14.5 0 0 0 0 20 14.5 14.5 0 0 0 0-20"/><path d="M2 12h20"/></svg>
           </div>
           <h3>Predictive Uncertainty</h3>
-          <p>Measures disagreement across 5 bootstrap models via standard deviation. High variance indicates low model confidence.</p>
+          <p>When models disagree (σ ≥ 0.02), the system recognizes its own epistemic limits and routes to cautious actions rather than making overconfident decisions.</p>
         </div>
 
-        <!-- Layer 3 -->
         <div class="pipeline-card glass-panel zoom-in" style="transition-delay: 200ms;">
           <div class="card-icon icon-pink">
             <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/><circle cx="12" cy="11" r="3"/></svg>
           </div>
           <h3>Novelty Isolation</h3>
-          <p>An Isolation Forest trained purely on legitimate behavior flags zero-day exploits and totally unseen data profiles.</p>
+          <p>An Isolation Forest trained exclusively on legitimate behavior flags zero-day patterns the ensemble has never seen — a structural defense against distribution shift.</p>
         </div>
       </div>
     </div>
   </section>
 
-  <!-- CTA Section -->
+  <!-- ===== CTA ===== -->
   <section class="cta-section">
     <div class="cta-card glass-panel fade-in">
-      <h2>Ready to observe the pipeline in action?</h2>
-      <p>Simulate transactions, inject extreme scenarios, and audit the cost simulations.</p>
+      <h2>Run the experiment yourself.</h2>
+      <p>The Research Laboratory lets you inject transactions, observe evidence flow through four stages of reasoning, and audit every decision.</p>
       <a href="/dashboard" class="btn-primary glow-button">
-        Initialize Dashboard Subsystem
+        Initialize Laboratory
       </a>
     </div>
   </section>
 
   <footer class="site-footer">
-    <p class="mono">Developed by <strong>Devansh Kumar</strong> (@devantaris) — Risk Aware Fraud Transaction Decision System</p>
+    <p class="mono">Built by <strong>Devansh Kumar</strong> (@devantaris) · Risk-Aware Fraud Transaction Decision System · 2025</p>
   </footer>
 
   <script src="/landing-script.js"></script>

@@ -3,148 +3,160 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>MARI - Risk-Aware Fraud Decision System</title>
-  <meta name="description" content="Decision-theoretic transaction routing system using calibrated risk, bootstrap uncertainty, and novelty detection.">
+  <title>MARI — Selective Classification for Fraud Detection</title>
+  <meta name="description" content="A selective classification framework for credit card fraud detection that knows when not to decide. 56,962 transactions. Zero false blocks. By Devansh Kumar.">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;700&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="/landing-style.css">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="landing-style.css">
 </head>
-<body class="dark-theme">
-  
-  <!-- Glowing Ambient Background Canvas -->
-  <canvas id="ambientCanvas"></canvas>
+<body>
 
-  <nav class="navbar floating-pill">
-    <div class="nav-container">
-      <div class="nav-brand">
-        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-          <path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"/>
-        </svg>
-        <span class="brand-text">MARI</span>
-      </div>
-      <div class="nav-links">
-        <a href="#architecture">Architecture</a>
-        <a href="docs.html" target="_blank">Documentation</a>
-        <a href="https://github.com/devantaris/risk-aware-fraud-detection" target="_blank" rel="noopener">GitHub</a>
-        <a href="/dashboard" class="btn-primary-sm glow-button">Launch Dashboard</a>
-      </div>
+  <!-- ========== Nav ========== -->
+  <nav class="nav">
+    <div class="nav-brand">MARI</div>
+    <div class="nav-links">
+      <a href="https://github.com/devantaris/mari" target="_blank" rel="noopener">GitHub</a>
+      <a href="/dashboard">Laboratory →</a>
     </div>
   </nav>
 
-  <!-- Hero Section -->
-  <header class="hero-section">
-    <div class="hero-split">
-      <div class="hero-content fade-in">
-        <div class="hero-badge mono">XGBOOST BOOTSTRAP ENSEMBLE</div>
-        <h1 class="hero-title">Intelligent Fraud<br><span class="text-gradient">Routing Engine.</span></h1>
-        <p class="hero-subtitle">
-          A decision-theoretic framework that routes transactions by evaluating not just risk, but the <strong>uncertainty</strong> of its models and the <strong>novelty</strong> of the behavior.
-        </p>
-        <div class="hero-actions">
-          <a href="/dashboard" class="btn-primary">
-            Launch Dashboard
-            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-              <path d="M5 12h14M12 5l7 7-7 7"/>
-            </svg>
-          </a>
-          <a href="#architecture" class="btn-secondary">Explore Architecture</a>
-        </div>
-      </div>
-      
-      <div class="hero-3d-visual fade-in" style="animation-delay: 0.3s;">
-        <div class="credit-card-3d">
-          <div class="card-chip"></div>
-          <div class="card-logo">💳 FINTECH</div>
-          <div class="card-number mono">**** **** **** 4912</div>
-          <div class="card-glow"></div>
-        </div>
-        <div class="fraud-overlay badge-approve float-1">
-          <span class="dot"></span> LOW RISK
-        </div>
-        <div class="fraud-overlay badge-decline float-2">
-          <span class="dot"></span> HIGH UNCERTAINTY
-        </div>
-      </div>
-    </div>
-  </header>
-
-  <!-- Value Proposition / Metrics -->
-  <section class="metrics-section">
-    <div class="metrics-container drop-in">
-      <div class="metric-card glass-panel">
-        <h3 class="mono text-brand">284K+</h3>
-        <p>Live Transactions Processed</p>
-      </div>
-      <div class="metric-card glass-panel">
-        <h3 class="mono text-brand">31 DIMS</h3>
-        <p>PCA Feature Space</p>
-      </div>
-      <div class="metric-card glass-panel">
-        <h3 class="mono text-brand">5 NODES</h3>
-        <p>Bootstrap Evaluation</p>
-      </div>
-      <div class="metric-card glass-panel">
-        <h3 class="mono text-brand">5 DECISIONS</h3>
-        <p>Asymmetric Cost Actions</p>
+  <!-- ========== Hero ========== -->
+  <section class="hero">
+    <div class="container" style="display:flex;flex-direction:column;align-items:center;">
+      <div class="hero-number">56,962</div>
+      <p class="hero-sub">transactions evaluated. <strong>Zero false blocks.</strong></p>
+      <p class="hero-tagline">A selective classification framework that knows when not to decide.</p>
+      <p class="hero-author">Devansh Kumar · 2025</p>
+      <div class="hero-actions">
+        <a href="/dashboard" class="btn-primary">Enter Laboratory</a>
+        <a href="https://github.com/devantaris/mari" target="_blank" rel="noopener" class="btn-secondary">View on GitHub</a>
       </div>
     </div>
   </section>
 
-  <!-- Architecture Section -->
-  <section id="architecture" class="arch-section">
-    <div class="arch-container">
-      <div class="section-header slide-up">
-        <h2 class="section-title">The Three Pillars of Decision</h2>
-        <p class="section-desc">MARI processes data through three distinct computational layers to determine the most cost-effective routing outcome.</p>
-      </div>
-
-      <div class="pipeline-grid">
-        <!-- Layer 1 -->
-        <div class="pipeline-card glass-panel zoom-in">
-          <div class="card-icon icon-cyan">
-            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"></polyline></svg>
-          </div>
-          <h3>Ensemble Risk</h3>
-          <p>Calculates the calibrated fraud probability from an XGBoost bootstrap ensemble. Higher values indicate stronger fraud signals.</p>
+  <!-- ========== Result Visualization ========== -->
+  <section class="result-section fade-in">
+    <div class="container">
+      <div class="result-bar-wrapper">
+        <div class="result-bar">
+          <div class="result-segment approve"></div>
+          <div class="result-segment decline"></div>
+          <div class="result-segment stepup"></div>
+          <div class="result-segment pend"></div>
         </div>
-
-        <!-- Layer 2 -->
-        <div class="pipeline-card glass-panel zoom-in" style="transition-delay: 100ms;">
-          <div class="card-icon icon-purple">
-            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M12 2a14.5 14.5 0 0 0 0 20 14.5 14.5 0 0 0 0-20"/><path d="M2 12h20"/></svg>
+        <div class="result-labels">
+          <div class="result-label">
+            <span class="result-dot approve"></span>
+            <span class="mono">56,841</span> Approve
           </div>
-          <h3>Predictive Uncertainty</h3>
-          <p>Measures disagreement across 5 bootstrap models via standard deviation. High variance indicates low model confidence.</p>
-        </div>
-
-        <!-- Layer 3 -->
-        <div class="pipeline-card glass-panel zoom-in" style="transition-delay: 200ms;">
-          <div class="card-icon icon-pink">
-            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/><circle cx="12" cy="11" r="3"/></svg>
+          <div class="result-label">
+            <span class="result-dot decline"></span>
+            <span class="mono">51</span> Decline
           </div>
-          <h3>Novelty Isolation</h3>
-          <p>An Isolation Forest trained purely on legitimate behavior flags zero-day exploits and totally unseen data profiles.</p>
+          <div class="result-label">
+            <span class="result-dot stepup"></span>
+            <span class="mono">19</span> Step-Up
+          </div>
+          <div class="result-label">
+            <span class="result-dot pend"></span>
+            <span class="mono">51</span> Pend
+          </div>
         </div>
       </div>
     </div>
   </section>
 
-  <!-- CTA Section -->
-  <section class="cta-section">
-    <div class="cta-card glass-panel fade-in">
-      <h2>Ready to observe the pipeline in action?</h2>
-      <p>Simulate transactions, inject extreme scenarios, and audit the cost simulations.</p>
-      <a href="/dashboard" class="btn-primary glow-button">
-        Initialize Dashboard Subsystem
-      </a>
+  <!-- ========== The Problem ========== -->
+  <section class="fade-in">
+    <div class="container">
+      <div class="section-title">The Problem</div>
+      <p class="section-body">
+        Binary classifiers output a probability. Above threshold: fraud. Below: legitimate.
+        But what happens when the model is <strong>uncertain</strong>? When it encounters patterns
+        it has never seen? When the cost of being wrong is asymmetric?
+        Binary systems can't say "I don't know." <strong>MARI can.</strong>
+      </p>
     </div>
   </section>
 
-  <footer class="site-footer">
-    <p class="mono">Developed by <strong>Devansh Kumar</strong> (@devantaris) — Risk Aware Fraud Transaction Decision System</p>
+  <!-- ========== Version Progression ========== -->
+  <section class="fade-in">
+    <div class="container">
+      <div class="section-title">The Progression</div>
+      <div class="version-grid">
+
+        <div class="version-card">
+          <div class="version-number">V1</div>
+          <div class="version-concept">Abstention</div>
+          <p class="version-desc">Bootstrap ensemble routes uncertain cases to abstention instead of forcing a decision.</p>
+          <div class="version-metric">5 states · σ ≥ 0.02 triggers caution</div>
+        </div>
+
+        <div class="version-card">
+          <div class="version-number">V2</div>
+          <div class="version-concept">Resolution</div>
+          <p class="version-desc">SVM second opinion clears safe abstentions at the cost-optimal breakeven.</p>
+          <div class="version-metric">26 of 55 abstentions cleared</div>
+        </div>
+
+        <div class="version-card">
+          <div class="version-number">V3</div>
+          <div class="version-concept">Fusion</div>
+          <p class="version-desc">Dempster-Shafer combines three evidence sources. Conflict enables sub-routing.</p>
+          <div class="version-metric">K ≥ 0.25 → human escalation</div>
+        </div>
+
+        <div class="version-card">
+          <div class="version-number">V4</div>
+          <div class="version-concept">Autonomy</div>
+          <p class="version-desc">Four terminal states. SHAP reason codes. Full explainability. Zero human involvement.</p>
+          <div class="version-metric">100% automation · 0 false blocks</div>
+        </div>
+
+      </div>
+    </div>
+  </section>
+
+  <!-- ========== Technical Foundation ========== -->
+  <section class="fade-in">
+    <div class="container">
+      <div class="section-title">Technical Foundation</div>
+      <div class="tech-grid">
+
+        <div class="tech-item">
+          <div class="tech-title">Calibrated Risk</div>
+          <p class="tech-desc">Mean of 5 isotonically calibrated XGBoost predictions</p>
+        </div>
+
+        <div class="tech-item">
+          <div class="tech-title">Epistemic Uncertainty</div>
+          <p class="tech-desc">Bootstrap standard deviation across ensemble members</p>
+        </div>
+
+        <div class="tech-item">
+          <div class="tech-title">Novelty Detection</div>
+          <p class="tech-desc">Isolation Forest trained on legitimate-only behavior</p>
+        </div>
+
+      </div>
+    </div>
+  </section>
+
+  <!-- ========== Footer CTA ========== -->
+  <section class="footer-cta fade-in">
+    <div class="container">
+      <p class="footer-cta-text"><a href="/dashboard">Run the experiment.</a></p>
+    </div>
+  </section>
+
+  <!-- ========== Footer ========== -->
+  <footer class="footer">
+    <div class="container">
+      <p>Built by Devansh Kumar · <a href="https://github.com/devantaris" target="_blank" rel="noopener">@devantaris</a> · 2025</p>
+    </div>
   </footer>
 
-  <script src="/landing-script.js"></script>
+  <script type="module" src="landing-script.js"></script>
 </body>
 </html>

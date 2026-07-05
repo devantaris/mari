@@ -1884,3 +1884,312 @@ body::after {
   background: var(--color-approve);
   box-shadow: 0 0 5px var(--color-approve-bg);
 }
+
+/* ========================================================
+   Research Laboratory — New Components
+   ======================================================== */
+
+/* Back to Research Link */
+.back-to-research {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 32px;
+  height: 32px;
+  border-radius: 8px;
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  color: var(--text-secondary);
+  text-decoration: none;
+  transition: all 0.2s;
+  margin-right: var(--space-md);
+  flex-shrink: 0;
+}
+
+.back-to-research:hover {
+  background: rgba(0, 229, 255, 0.1);
+  border-color: rgba(0, 229, 255, 0.3);
+  color: var(--color-primary);
+}
+
+.logo-sub {
+  font-weight: 400;
+  color: var(--text-secondary);
+  font-size: 0.75em;
+}
+
+/* Version Context Bar */
+.version-context {
+  padding: var(--space-md) var(--space-lg);
+  margin-bottom: var(--space-md);
+  border-left: 3px solid var(--color-primary);
+}
+
+.version-context-header {
+  display: flex;
+  align-items: center;
+  gap: var(--space-md);
+  margin-bottom: var(--space-sm);
+}
+
+.version-context-badge {
+  display: inline-flex;
+  align-items: center;
+  padding: 2px 10px;
+  border-radius: var(--radius-pill);
+  font-family: var(--font-mono);
+  font-size: 0.7rem;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  background: rgba(0, 229, 255, 0.15);
+  color: var(--color-primary);
+  border: 1px solid rgba(0, 229, 255, 0.3);
+}
+
+.version-context-title {
+  font-weight: 600;
+  font-size: 0.95rem;
+  color: var(--text-primary);
+  flex: 1;
+}
+
+.version-context-desc {
+  font-size: 0.82rem;
+  color: var(--text-secondary);
+  line-height: 1.5;
+}
+
+/* Foundations Toggle Button */
+.foundations-toggle {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 5px 12px;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: var(--radius-sm);
+  background: rgba(255, 255, 255, 0.03);
+  color: var(--text-secondary);
+  font-family: var(--font-sans);
+  font-size: 0.75rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s;
+  white-space: nowrap;
+}
+
+.foundations-toggle:hover {
+  background: rgba(0, 229, 255, 0.08);
+  border-color: rgba(0, 229, 255, 0.3);
+  color: var(--color-primary);
+}
+
+.foundations-toggle.active {
+  background: rgba(0, 229, 255, 0.12);
+  border-color: rgba(0, 229, 255, 0.4);
+  color: var(--color-primary);
+}
+
+/* Foundations Drawer */
+.foundations-drawer {
+  margin-bottom: var(--space-md);
+  overflow: hidden;
+  animation: slideDown 0.3s var(--ease-out);
+}
+
+.foundations-drawer.hidden {
+  display: none;
+}
+
+@keyframes slideDown {
+  from { opacity: 0; max-height: 0; transform: translateY(-10px); }
+  to { opacity: 1; max-height: 1000px; transform: translateY(0); }
+}
+
+.foundations-inner {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: var(--space-md);
+}
+
+.foundations-section {
+  background: var(--bg-surface);
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-md);
+  padding: var(--space-lg);
+}
+
+.foundations-section h4 {
+  font-size: 0.85rem;
+  font-weight: 700;
+  color: var(--color-primary);
+  margin-bottom: var(--space-md);
+  letter-spacing: 0.03em;
+  text-transform: uppercase;
+}
+
+/* Formula Blocks */
+.formula-block {
+  margin-bottom: var(--space-md);
+  padding-bottom: var(--space-md);
+  border-bottom: 1px solid var(--border-subtle);
+}
+
+.formula-block:last-child {
+  border-bottom: none;
+  margin-bottom: 0;
+  padding-bottom: 0;
+}
+
+.formula-label {
+  font-size: 0.72rem;
+  color: var(--text-tertiary);
+  font-weight: 500;
+  margin-bottom: 4px;
+  letter-spacing: 0.02em;
+}
+
+.formula {
+  font-size: 0.82rem;
+  color: var(--text-primary);
+  padding: 6px 10px;
+  background: rgba(0, 0, 0, 0.3);
+  border-radius: 6px;
+  border: 1px solid rgba(255, 255, 255, 0.05);
+  margin-bottom: 4px;
+}
+
+.formula-note {
+  font-size: 0.68rem;
+  color: var(--text-tertiary);
+  font-style: italic;
+  margin-top: 4px;
+}
+
+/* Threshold Table */
+.threshold-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.78rem;
+}
+
+.threshold-table th {
+  text-align: left;
+  padding: 6px 8px;
+  border-bottom: 1px solid var(--border-subtle);
+  color: var(--text-tertiary);
+  font-weight: 500;
+  font-size: 0.7rem;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+}
+
+.threshold-table td {
+  padding: 5px 8px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.03);
+  color: var(--text-secondary);
+}
+
+.threshold-table td.mono {
+  color: var(--color-primary);
+  font-weight: 600;
+}
+
+.threshold-table tr:hover td {
+  background: rgba(255, 255, 255, 0.02);
+}
+
+/* Architecture Flow */
+.arch-flow {
+  display: flex;
+  align-items: center;
+  gap: var(--space-sm);
+  flex-wrap: wrap;
+  margin-bottom: var(--space-md);
+}
+
+.arch-node {
+  padding: 4px 12px;
+  border-radius: var(--radius-sm);
+  font-size: 0.72rem;
+  font-weight: 600;
+  border: 1px solid;
+}
+
+.arch-node-cyan {
+  background: rgba(0, 229, 255, 0.1);
+  border-color: rgba(0, 229, 255, 0.3);
+  color: var(--color-primary);
+}
+
+.arch-node-purple {
+  background: rgba(189, 0, 255, 0.1);
+  border-color: rgba(189, 0, 255, 0.3);
+  color: #bd00ff;
+}
+
+.arch-node-pink {
+  background: rgba(255, 51, 102, 0.1);
+  border-color: rgba(255, 51, 102, 0.3);
+  color: #ff3366;
+}
+
+.arch-node-green {
+  background: rgba(0, 255, 204, 0.1);
+  border-color: rgba(0, 255, 204, 0.3);
+  color: #00ffcc;
+}
+
+.arch-arrow {
+  color: var(--text-tertiary);
+  font-size: 1rem;
+  font-weight: 300;
+}
+
+/* Footer Link */
+.footer-link {
+  color: var(--color-primary);
+  text-decoration: none;
+  transition: opacity 0.2s;
+}
+
+.footer-link:hover {
+  opacity: 0.7;
+}
+
+/* Responsive: Foundations */
+@media (max-width: 900px) {
+  .foundations-inner {
+    grid-template-columns: 1fr;
+  }
+  .version-context-header {
+    flex-wrap: wrap;
+  }
+}
+
+/* ---- Clean Header Brand ---- */
+.header-brand {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  text-decoration: none;
+  color: var(--text-primary);
+  transition: opacity 0.2s;
+}
+.header-brand:hover { opacity: 0.7; }
+.brand-mark {
+  font-family: var(--font-mono);
+  font-weight: 700;
+  font-size: 1rem;
+  color: #00d4aa;
+  letter-spacing: 0.08em;
+}
+.brand-sep {
+  color: var(--text-tertiary);
+  font-size: 0.8rem;
+}
+.brand-label {
+  font-size: 0.82rem;
+  font-weight: 500;
+  color: var(--text-secondary);
+}
+

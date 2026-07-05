@@ -2164,4 +2164,32 @@ body::after {
   .version-context-header {
     flex-wrap: wrap;
   }
-}
+}
+
+/* ---- Clean Header Brand ---- */
+.header-brand {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  text-decoration: none;
+  color: var(--text-primary);
+  transition: opacity 0.2s;
+}
+.header-brand:hover { opacity: 0.7; }
+.brand-mark {
+  font-family: var(--font-mono);
+  font-weight: 700;
+  font-size: 1rem;
+  color: #00d4aa;
+  letter-spacing: 0.08em;
+}
+.brand-sep {
+  color: var(--text-tertiary);
+  font-size: 0.8rem;
+}
+.brand-label {
+  font-size: 0.82rem;
+  font-weight: 500;
+  color: var(--text-secondary);
+}
+

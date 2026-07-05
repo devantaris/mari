@@ -68,7 +68,7 @@ export const Methodology: React.FC = () => {
                 K = Σ_(B∩C=Ø) m_1(B)*m_2(C)
               </div>
               <p className="text-[11px] text-gray-400 leading-relaxed">
-                Measures the degree of conflict between the source models. If K &ge; 0.25, the signal is considered highly conflicting and routed to human review (V3) or PEND (V4).
+                Measures the degree of conflict between the source models. If K &ge; 0.30, the signal is considered highly conflicting and routed to human review (V3) or PEND (V4).
               </p>
             </div>
           </div>

@@ -12,10 +12,10 @@ interface VersionMetrics {
 }
 
 const metricsByVersion: Record<string, VersionMetrics> = {
-  V1: { approve: 56815, decline: 45, stepup: 12, abstain: 55, escalate: 35, pend: 0, manualReview: 90 },
-  V2: { approve: 56841, decline: 45, stepup: 38, abstain: 0, escalate: 38, pend: 0, manualReview: 38 },
-  V3: { approve: 56841, decline: 51, stepup: 45, abstain: 0, escalate: 0, pend: 25, manualReview: 25 },
-  V4: { approve: 56841, decline: 51, stepup: 19, abstain: 0, escalate: 0, pend: 51, manualReview: 0 }
+  V1: { approve: 56814, decline: 37, stepup: 10, abstain: 56, escalate: 45, pend: 0, manualReview: 101 },
+  V2: { approve: 56823, decline: 37, stepup: 10, abstain: 47, escalate: 45, pend: 0, manualReview: 92 },
+  V3: { approve: 56823, decline: 47, stepup: 20, abstain: 47, escalate: 25, pend: 0, manualReview: 72 },
+  V4: { approve: 56823, decline: 47, stepup: 20, abstain: 0, escalate: 0, pend: 72, manualReview: 0 }
 };
 
 export const Progression: React.FC = () => {
@@ -180,7 +180,7 @@ export const Progression: React.FC = () => {
           <div className="glass-card p-6 border-l-4 border-l-purple-500 space-y-4">
             <h4 className="text-lg font-bold text-white">V2 SVM Neighborhood Resolution</h4>
             <p className="text-xs text-gray-400 leading-relaxed">
-              V2 introduces the Support Vector Machine second opinion model. It intercepts transactions in the ABSTAIN zone (where risk is low but model disagreement is high) and scans the local feature neighborhood. If the neighbor distribution is benign (P(fraud) &lt; 0.01), it clears them to APPROVE. This successfully resolves <strong>26 of the 55 V1 abstentions</strong> without human intervention.
+              V2 introduces the Support Vector Machine second opinion model. It intercepts transactions in the ABSTAIN zone (where risk is low but model disagreement is high) and scans the local feature neighborhood. If the neighbor distribution is benign (P(fraud) &lt; 0.01), it clears them to APPROVE. This successfully resolves <strong>9 of the 56 V1 abstentions</strong> without human intervention, reducing the human workload to <strong>92 cases</strong>.
             </p>
           </div>
         )}
@@ -188,7 +188,7 @@ export const Progression: React.FC = () => {
           <div className="glass-card p-6 border-l-4 border-l-amber-500 space-y-4">
             <h4 className="text-lg font-bold text-white">V3 Dempster-Shafer Evidence Fusion</h4>
             <p className="text-xs text-gray-400 leading-relaxed">
-              V3 adds Dempster-Shafer mathematical belief functions to evaluate the ESCALATE bucket. By fusing the conflicting outputs of the XGBoost ensemble, calibrated SVM, and Isolation Forest novelty score, V3 resolves cases of low conflict and high belief. This automates <strong>74% of the high-risk escalations</strong>, resolving them into AUTO_DECLINE or STEP_UP.
+              V3 adds Dempster-Shafer mathematical belief functions to evaluate the ESCALATE bucket. By fusing the conflicting outputs of the XGBoost ensemble, calibrated SVM, and Isolation Forest novelty score, V3 resolves cases of low conflict and high belief. This automates <strong>44.44% of the high-risk escalations</strong> (20 out of 45 cases), resolving them into AUTO_DECLINE or STEP_UP, and reducing total human review queue to <strong>72 cases</strong>.
             </p>
           </div>
         )}
@@ -196,7 +196,7 @@ export const Progression: React.FC = () => {
           <div className="glass-card p-6 border-l-4 border-l-cyan-500 space-y-4">
             <h4 className="text-lg font-bold text-white">V4 Terminal State Collapse & Explainability</h4>
             <p className="text-xs text-gray-400 leading-relaxed">
-              V4 represents the fully autonomous architecture. It collapses all intermediate stages into 4 terminal actions (APPROVE, DECLINE, STEP_UP, PEND). Transactions that remain unresolved by SVM and Dempster-Shafer are routed to a final PEND state where a list of local SHAP feature reason codes is automatically attached. This results in <strong>0% required human intervention</strong>, achieving complete automation.
+              V4 represents the fully autonomous architecture. It collapses all intermediate stages into 4 terminal actions (APPROVE, DECLINE, STEP_UP, PEND). Transactions that remain unresolved by SVM and Dempster-Shafer (72 total cases: 47 from ABSTAIN and 25 from ESCALATE) are routed to a final PEND state where a list of local SHAP feature reason codes is automatically attached. This results in <strong>0% required human intervention</strong>, achieving complete automation.
             </p>
           </div>
         )}

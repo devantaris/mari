@@ -152,6 +152,7 @@ export const Workstation: React.FC = () => {
       case 'STEP_UP_AUTH':
       case 'STEP_UP':
         return 'bg-decision-stepup/10 text-decision-stepup border-decision-stepup/30';
+      case 'ESCALATE':
       case 'ESCALATE_INVEST':
       case 'HUMAN_ESCALATE':
         return 'bg-decision-escalate/10 text-decision-escalate border-decision-escalate/30';

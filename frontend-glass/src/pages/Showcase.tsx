@@ -95,15 +95,15 @@ export const Showcase: React.FC = () => {
               v: 'V2',
               title: 'SVM Second Opinion',
               desc: 'Intercepts ABSTAIN cases. Employs non-linear Support Vector Machine neighborhood density in PCA space to safely clear customer transactions.',
-              contrib: 'Clears 47% of Abstentions',
-              metric: '26 transactions cleared'
+              contrib: 'Clears 16.07% of Abstentions',
+              metric: '9 transactions cleared'
             },
             {
               v: 'V3',
               title: 'Dempster-Shafer Fusion',
               desc: 'Intercepts ESCALATE cases. Combines ensemble probabilities, SVM decisions, and Isolation Forest scores to resolve conflicts mathematically.',
-              contrib: '74% of Escalations automated',
-              metric: 'K < 0.25 → Human'
+              contrib: '44.44% of Escalations automated',
+              metric: 'K ≥ 0.30 → Human'
             },
             {
               v: 'V4',

@@ -1,162 +1,19 @@
 <!DOCTYPE html>
-<html lang="en">
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>MARI — Selective Classification for Fraud Detection</title>
-  <meta name="description" content="A selective classification framework for credit card fraud detection that knows when not to decide. 56,962 transactions. Zero false blocks. By Devansh Kumar.">
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="landing-style.css">
-</head>
-<body>
-
-  <!-- ========== Nav ========== -->
-  <nav class="nav">
-    <div class="nav-brand">MARI</div>
-    <div class="nav-links">
-      <a href="https://github.com/devantaris/mari" target="_blank" rel="noopener">GitHub</a>
-      <a href="/dashboard">Laboratory →</a>
-    </div>
-  </nav>
-
-  <!-- ========== Hero ========== -->
-  <section class="hero">
-    <div class="container" style="display:flex;flex-direction:column;align-items:center;">
-      <div class="hero-number">56,962</div>
-      <p class="hero-sub">transactions evaluated. <strong>Zero false blocks.</strong></p>
-      <p class="hero-tagline">A selective classification framework that knows when not to decide.</p>
-      <p class="hero-author">Devansh Kumar · 2025</p>
-      <div class="hero-actions">
-        <a href="/dashboard" class="btn-primary">Enter Laboratory</a>
-        <a href="https://github.com/devantaris/mari" target="_blank" rel="noopener" class="btn-secondary">View on GitHub</a>
-      </div>
-    </div>
-  </section>
-
-  <!-- ========== Result Visualization ========== -->
-  <section class="result-section fade-in">
-    <div class="container">
-      <div class="result-bar-wrapper">
-        <div class="result-bar">
-          <div class="result-segment approve"></div>
-          <div class="result-segment decline"></div>
-          <div class="result-segment stepup"></div>
-          <div class="result-segment pend"></div>
-        </div>
-        <div class="result-labels">
-          <div class="result-label">
-            <span class="result-dot approve"></span>
-            <span class="mono">56,841</span> Approve
-          </div>
-          <div class="result-label">
-            <span class="result-dot decline"></span>
-            <span class="mono">51</span> Decline
-          </div>
-          <div class="result-label">
-            <span class="result-dot stepup"></span>
-            <span class="mono">19</span> Step-Up
-          </div>
-          <div class="result-label">
-            <span class="result-dot pend"></span>
-            <span class="mono">51</span> Pend
-          </div>
-        </div>
-      </div>
-    </div>
-  </section>
-
-  <!-- ========== The Problem ========== -->
-  <section class="fade-in">
-    <div class="container">
-      <div class="section-title">The Problem</div>
-      <p class="section-body">
-        Binary classifiers output a probability. Above threshold: fraud. Below: legitimate.
-        But what happens when the model is <strong>uncertain</strong>? When it encounters patterns
-        it has never seen? When the cost of being wrong is asymmetric?
-        Binary systems can't say "I don't know." <strong>MARI can.</strong>
-      </p>
-    </div>
-  </section>
-
-  <!-- ========== Version Progression ========== -->
-  <section class="fade-in">
-    <div class="container">
-      <div class="section-title">The Progression</div>
-      <div class="version-grid">
-
-        <div class="version-card">
-          <div class="version-number">V1</div>
-          <div class="version-concept">Abstention</div>
-          <p class="version-desc">Bootstrap ensemble routes uncertain cases to abstention instead of forcing a decision.</p>
-          <div class="version-metric">5 states · σ ≥ 0.02 triggers caution</div>
-        </div>
-
-        <div class="version-card">
-          <div class="version-number">V2</div>
-          <div class="version-concept">Resolution</div>
-          <p class="version-desc">SVM second opinion clears safe abstentions at the cost-optimal breakeven.</p>
-          <div class="version-metric">26 of 55 abstentions cleared</div>
-        </div>
-
-        <div class="version-card">
-          <div class="version-number">V3</div>
-          <div class="version-concept">Fusion</div>
-          <p class="version-desc">Dempster-Shafer combines three evidence sources. Conflict enables sub-routing.</p>
-          <div class="version-metric">K ≥ 0.25 → human escalation</div>
-        </div>
-
-        <div class="version-card">
-          <div class="version-number">V4</div>
-          <div class="version-concept">Autonomy</div>
-          <p class="version-desc">Four terminal states. SHAP reason codes. Full explainability. Zero human involvement.</p>
-          <div class="version-metric">100% automation · 0 false blocks</div>
-        </div>
-
-      </div>
-    </div>
-  </section>
-
-  <!-- ========== Technical Foundation ========== -->
-  <section class="fade-in">
-    <div class="container">
-      <div class="section-title">Technical Foundation</div>
-      <div class="tech-grid">
-
-        <div class="tech-item">
-          <div class="tech-title">Calibrated Risk</div>
-          <p class="tech-desc">Mean of 5 isotonically calibrated XGBoost predictions</p>
-        </div>
-
-        <div class="tech-item">
-          <div class="tech-title">Epistemic Uncertainty</div>
-          <p class="tech-desc">Bootstrap standard deviation across ensemble members</p>
-        </div>
-
-        <div class="tech-item">
-          <div class="tech-title">Novelty Detection</div>
-          <p class="tech-desc">Isolation Forest trained on legitimate-only behavior</p>
-        </div>
-
-      </div>
-    </div>
-  </section>
-
-  <!-- ========== Footer CTA ========== -->
-  <section class="footer-cta fade-in">
-    <div class="container">
-      <p class="footer-cta-text"><a href="/dashboard">Run the experiment.</a></p>
-    </div>
-  </section>
-
-  <!-- ========== Footer ========== -->
-  <footer class="footer">
-    <div class="container">
-      <p>Built by Devansh Kumar · <a href="https://github.com/devantaris" target="_blank" rel="noopener">@devantaris</a> · 2025</p>
-    </div>
-  </footer>
-
-  <script type="module" src="landing-script.js"></script>
-</body>
+<html lang="en" class="dark">
+  <head>
+    <meta charset="UTF-8" />
+    <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🛡️</text></svg>" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>MARI — Selective Classification Framework</title>
+    <meta name="description" content="A Two-Dimensional Uncertainty Framework for Credit Card Fraud Detection by Devansh Kumar." />
+    
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
+  </head>
+  <body class="bg-[#080b11] text-gray-100 font-sans antialiased overflow-x-hidden selection:bg-[#00d4aa] selection:text-[#080b11]">
+    <div id="root"></div>
+    <script type="module" src="/src/main.tsx"></script>
+  </body>
 </html>

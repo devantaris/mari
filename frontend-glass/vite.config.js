@@ -1,15 +1,8 @@
 import { defineConfig } from 'vite';
+import react from '@vitejs/plugin-react';
 
 export default defineConfig({
-  build: {
-    rollupOptions: {
-      input: {
-        main: './index.html',
-        dashboard: './dashboard.html',
-        docs: './docs.html',
-      },
-    },
-  },
+  plugins: [react()],
   server: {
     port: 5173,
     proxy: {

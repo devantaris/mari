@@ -1,0 +1,46 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  body {
+    @apply bg-cyber-bg text-gray-100 font-sans antialiased overflow-x-hidden;
+  }
+}
+
+@layer utilities {
+  .cyber-glow {
+    text-shadow: 0 0 15px rgba(0, 212, 170, 0.4);
+  }
+  
+  .glass-card {
+    @apply bg-cyber-card/85 backdrop-blur-md border border-cyber-border rounded-xl;
+  }
+  
+  .glass-card-hover {
+    @apply transition-all duration-300 hover:-translate-y-0.5 hover:border-cyber-accent/30;
+  }
+  
+  .btn-gradient {
+    @apply bg-gradient-to-r from-teal-400 to-purple-600 hover:from-teal-300 hover:to-purple-500 transition-all duration-300 text-cyber-bg font-semibold rounded-lg shadow-[0_0_15px_rgba(0,212,170,0.3)] hover:shadow-[0_0_25px_rgba(0,212,170,0.5)];
+  }
+}
+
+/* Custom Scrollbar for cyber theme */
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+
+::-webkit-scrollbar-track {
+  background: #080b11;
+}
+
+::-webkit-scrollbar-thumb {
+  background: #1f293d;
+  border-radius: 3px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: #00d4aa;
+}

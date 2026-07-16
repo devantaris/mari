@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { ArrowRight, Layers, ShieldCheck, UserCheck, BarChart3, AlertCircle, GitBranch, Cpu, Database, Zap, Shield, AlertTriangle, CheckCircle, Clock, TrendingUp, X } from 'lucide-react';
+import { ArrowRight, Layers, ShieldCheck, UserCheck, BarChart3, AlertCircle, GitBranch, Cpu, Database, Zap, Shield, AlertTriangle, CheckCircle, Clock, TrendingUp } from 'lucide-react';
 import { useStore } from '../store/useStore';
 
 export const Showcase: React.FC = () => {

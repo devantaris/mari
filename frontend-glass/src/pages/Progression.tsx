@@ -82,7 +82,7 @@ export const Progression: React.FC = () => {
           </div>
           
           <div className="pt-6 border-t border-cyber-border text-center">
-            <span className="text-xs text-gray-500 font-mono">Cost Per Tx: {selectedTab === 'V1' ? '$1.14' : selectedTab === 'V2' ? '$0.98' : '$0.84'}</span>
+            <span className="text-xs text-gray-500 font-mono">Cost Per Tx: {selectedTab === 'V1' ? '$1.14' : selectedTab === 'V2' ? '$0.98' : selectedTab === 'V3' ? '$0.84' : '$0.71'}</span>
           </div>
         </div>
 
@@ -141,7 +141,7 @@ export const Progression: React.FC = () => {
             {m.escalate > 0 && (
               <div className="space-y-1 animate-fade-in">
                 <div className="flex justify-between text-xs font-mono">
-                  <span className="text-gray-300">💖 Escalate (Human Queue)</span>
+                  <span className="text-gray-300">🟠 Escalate (Human Queue)</span>
                   <span className="text-gray-400">{m.escalate.toLocaleString()} ({((m.escalate/total)*100).toFixed(2)}%)</span>
                 </div>
                 <div className="h-2 bg-cyber-bg rounded-full overflow-hidden">
@@ -170,9 +170,9 @@ export const Progression: React.FC = () => {
       <div className="max-w-5xl mx-auto">
         {selectedTab === 'V1' && (
           <div className="glass-card p-6 border-l-4 border-l-cyber-accent space-y-4">
-            <h4 className="text-lg font-bold text-white">V1 Baseline - Core 2D Plane</h4>
+            <h4 className="text-lg font-bold text-white">V1 Baseline — Core 2D Plane</h4>
             <p className="text-xs text-gray-400 leading-relaxed">
-              V1 establishes the risk-uncertainty space. Transactions are grouped into five buckets: APPROVE, STEP_UP, ABSTAIN, ESCALATE, and BLOCK. In V1, any case falling into the ABSTAIN or ESCALATE bucket requires a human analyst to manually resolve it. This leaves <strong>90 transactions</strong> requiring manual labor.
+              V1 establishes the risk-uncertainty space. Transactions are grouped into five buckets: APPROVE, STEP_UP, ABSTAIN, ESCALATE, and DECLINE. In V1, any case falling into the ABSTAIN or ESCALATE bucket requires a human analyst to manually resolve it. This leaves <strong>101 transactions</strong> requiring manual labor — 56 abstentions and 45 escalations.
             </p>
           </div>
         )}

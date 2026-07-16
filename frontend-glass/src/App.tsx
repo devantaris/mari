@@ -49,7 +49,7 @@ export const App: React.FC = () => {
           <div className="flex items-center gap-2">
             <span className="font-mono font-black text-cyber-accent tracking-widest text-lg">MARI</span>
             <span className="text-gray-600 text-xs font-light">|</span>
-            <span className="text-xs text-gray-400 font-medium">Workstation</span>
+            <span className="text-xs text-gray-400 font-medium capitalize">{currentPage}</span>
           </div>
 
           {/* Navigation Items */}

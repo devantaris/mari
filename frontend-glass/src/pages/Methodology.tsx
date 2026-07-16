@@ -1,5 +1,5 @@
 import React from 'react';
-import { Sigma, Table, Info } from 'lucide-react';
+import { Sigma, Table, Info, Lock, FlaskConical, BarChart2, GitCompare, Sparkles } from 'lucide-react';
 
 export const Methodology: React.FC = () => {
   return (
@@ -131,6 +131,98 @@ export const Methodology: React.FC = () => {
             By applying isotonic calibration to the XGBoost bootstrap predictions, we aligned model outputs directly with empirical fraud rates. This process reduced the Brier score of the ensemble by <strong className="text-cyber-accent">-74.4%</strong>, ensuring that the risk values correspond mathematically to the probability of true fraud.
           </p>
         </div>
+      </div>
+
+      {/* ── EMBARGO SECTION ── */}
+      <div className="max-w-5xl mx-auto space-y-6">
+
+        {/* Header */}
+        <div className="flex flex-col items-center text-center space-y-3">
+          <div className="flex items-center gap-2 px-3 py-1 rounded-full border border-red-500/30 bg-red-950/30">
+            <span className="w-1.5 h-1.5 rounded-full bg-red-500 animate-pulse" />
+            <span className="text-[10px] font-mono uppercase tracking-widest text-red-400">IEEE Review Embargo — Active</span>
+          </div>
+          <h2 className="text-2xl md:text-3xl font-bold text-white">Research Results</h2>
+          <p className="text-sm text-gray-400 max-w-lg">
+            Full experimental results, ablation studies, and statistical validation are withheld
+            pending peer review. This section will be made public upon acceptance.
+          </p>
+        </div>
+
+        {/* Locked cards grid */}
+        <div className="grid md:grid-cols-2 gap-4">
+          {[
+            {
+              icon: GitCompare,
+              title: 'Full Ablation Study',
+              desc: 'V1 vs V2 vs V3 vs V4 — metric-by-metric comparison across precision, recall, F1, and automation rate on the held-out test set.',
+              tag: 'Table 3 in paper'
+            },
+            {
+              icon: FlaskConical,
+              title: 'Statistical Significance Tests',
+              desc: "McNemar's test comparing MARI V4 against baseline XGBoost. Null hypothesis: no significant difference in error patterns.",
+              tag: 'Section 5.2 in paper'
+            },
+            {
+              icon: BarChart2,
+              title: 'Confusion Matrices & ROC Curves',
+              desc: 'Per-version confusion matrices and ROC curves on 56,961 held-out transactions (284,807 × 20% test split). AUC per version.',
+              tag: 'Figure 4–7 in paper'
+            },
+            {
+              icon: Sparkles,
+              title: 'Full SHAP Summary Analysis',
+              desc: 'Global feature importance ranking across V1–V28 + Amount. Beeswarm plots showing feature contribution distributions for DECLINE vs APPROVE decisions.',
+              tag: 'Figure 9 in paper'
+            },
+          ].map(({ icon: Icon, title, desc, tag }, idx) => (
+            <div key={idx} className="relative overflow-hidden rounded-xl border border-red-500/15 bg-cyber-card/40">
+              {/* Blurred content underneath */}
+              <div className="p-6 space-y-3 blur-sm select-none pointer-events-none" aria-hidden="true">
+                <div className="flex items-center gap-2">
+                  <Icon size={16} className="text-gray-400" />
+                  <span className="text-sm font-semibold text-white">{title}</span>
+                </div>
+                <div className="space-y-1.5">
+                  {[80, 60, 90, 50].map((w, i) => (
+                    <div key={i} className="h-2 rounded bg-gray-700" style={{ width: `${w}%` }} />
+                  ))}
+                </div>
+                <div className="h-24 rounded bg-gray-800/60" />
+              </div>
+
+              {/* Lock overlay */}
+              <div className="absolute inset-0 flex flex-col items-center justify-center gap-3 bg-cyber-bg/70 backdrop-blur-[2px]">
+                <div className="p-3 rounded-full border border-red-500/30 bg-red-950/40">
+                  <Lock size={20} className="text-red-400" />
+                </div>
+                <div className="text-center space-y-1 px-4">
+                  <div className="text-sm font-bold text-white">{title}</div>
+                  <p className="text-[11px] text-gray-400 leading-relaxed">{desc}</p>
+                </div>
+                <span className="text-[9px] font-mono px-2 py-0.5 rounded border border-red-500/20 text-red-400/70 uppercase tracking-widest">
+                  {tag} · Embargoed
+                </span>
+              </div>
+            </div>
+          ))}
+        </div>
+
+        {/* Bottom note */}
+        <div className="glass-card p-5 flex items-start gap-4 border-red-500/10 bg-gradient-to-r from-red-950/10 to-cyber-card/40">
+          <Lock size={16} className="text-red-400/70 flex-shrink-0 mt-0.5" />
+          <div className="space-y-1">
+            <p className="text-xs text-gray-400 leading-relaxed">
+              This data is withheld to comply with IEEE Access double-blind review policy.
+              The above sections will be unlocked and linked to the published paper upon acceptance.
+              The deployed system at{' '}
+              <a href="https://mari-alpha.vercel.app" target="_blank" rel="noopener noreferrer" className="text-cyber-accent hover:underline font-mono">mari-alpha.vercel.app</a>{' '}
+              demonstrates the production implementation independently of the paper.
+            </p>
+          </div>
+        </div>
+
       </div>
     </div>
   );

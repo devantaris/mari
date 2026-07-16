@@ -64,7 +64,7 @@ export const Profile: React.FC = () => {
               <Code2 size={14} /> Repository Source
             </a>
             <a
-              href="https://www.linkedin.com/in/devantaris"
+              href="https://www.linkedin.com/in/devansh-kumar-3b3701217/"
               target="_blank"
               rel="noopener noreferrer"
               className="px-4 py-2 border border-cyber-border hover:border-gray-600 text-xs rounded font-mono text-gray-400 hover:text-white flex items-center gap-1.5 transition-colors"

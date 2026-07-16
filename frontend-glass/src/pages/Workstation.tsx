@@ -42,57 +42,89 @@ export const Workstation: React.FC = () => {
         if (!res.ok) throw new Error('API server returned error');
         data = await res.json();
       } else {
-        // Local simulation fallback if FastAPI backend is not running
-        const prob = Math.random();
-        const std = Math.random() * 0.05;
-        const anomaly = Math.random() * 0.2 - 0.1;
-        let decision = 'APPROVE';
-        
-        if (activeVersion === 'V1') {
-          if (prob < 0.3) decision = std >= 0.02 ? 'ABSTAIN' : 'APPROVE';
-          else if (prob >= 0.8) decision = std >= 0.02 ? 'ESCALATE_INVEST' : 'DECLINE';
-          else decision = 'STEP_UP_AUTH';
-        } else if (activeVersion === 'V2') {
-          if (prob < 0.3) {
-            decision = std >= 0.02 ? (Math.random() > 0.5 ? 'APPROVE' : 'STEP_UP_AUTH') : 'APPROVE';
-          } else if (prob >= 0.8) {
-            decision = std >= 0.02 ? 'ESCALATE_INVEST' : 'DECLINE';
-          } else decision = 'STEP_UP_AUTH';
-        } else if (activeVersion === 'V3') {
-          if (prob < 0.3) {
-            decision = std >= 0.02 ? (Math.random() > 0.5 ? 'APPROVE' : 'STEP_UP_AUTH') : 'APPROVE';
-          } else if (prob >= 0.8) {
-            decision = std >= 0.02 ? (Math.random() > 0.6 ? 'AUTO_DECLINE' : 'STEP_UP_AUTH') : 'DECLINE';
-          } else decision = 'STEP_UP_AUTH';
-        } else { // V4
-          if (prob < 0.3) {
-            decision = std >= 0.02 ? (Math.random() > 0.5 ? 'APPROVE' : 'STEP_UP_AUTH') : 'APPROVE';
-          } else if (prob >= 0.8) {
-            decision = std >= 0.02 ? (Math.random() > 0.6 ? 'DECLINE' : 'STEP_UP_AUTH') : 'DECLINE';
-          } else {
-            decision = Math.random() > 0.5 ? 'PEND' : 'STEP_UP_AUTH';
-          }
-        }
-
-        data = {
-          decision,
-          probability: prob,
-          uncertainty: std,
-          anomaly_score: anomaly,
-          diagnostic: {
-            v2_svm_prob: Math.random() * 0.05,
-            v2_resolved: std >= 0.02 && prob < 0.3,
-            v3_belief: Math.random(),
-            v3_ignorance: Math.random() * 0.1,
-            v3_conflict: Math.random() * 0.3,
-            v4_reason_code: 'HIGH_UNCERTAINTY_V4',
-            v4_shap_contributions: [
-              { feature: 'V17', value: -0.85 },
-              { feature: 'V14', value: 0.42 },
-              { feature: 'Amount', value: -0.12 }
-            ]
-          }
+        // --- PRESET MOCK: deterministic outputs so buttons always show the right state ---
+        const presetMocks: Record<string, any> = {
+          'Preset: approve': {
+            decision: 'APPROVE', probability: 0.04, uncertainty: 0.003, anomaly_score: 0.05,
+            diagnostic: { v2_svm_prob: 0.002, v2_resolved: false, v3_belief: 0.96, v3_ignorance: 0.02, v3_conflict: 0.02, v4_reason_code: null, v4_shap_contributions: [] }
+          },
+          'Preset: stepup': {
+            decision: 'STEP_UP_AUTH', probability: 0.52, uncertainty: 0.008, anomaly_score: -0.01,
+            diagnostic: { v2_svm_prob: 0.45, v2_resolved: false, v3_belief: 0.55, v3_ignorance: 0.1, v3_conflict: 0.35, v4_reason_code: null, v4_shap_contributions: [] }
+          },
+          'Preset: abstain': {
+            decision: 'ABSTAIN', probability: 0.11, uncertainty: 0.031, anomaly_score: 0.02,
+            diagnostic: { v2_svm_prob: 0.008, v2_resolved: true, v3_belief: 0.12, v3_ignorance: 0.6, v3_conflict: 0.28, v4_reason_code: 'HIGH_UNCERTAINTY_ABSTAIN', v4_shap_contributions: [{ feature: 'V4', value: 0.21 }, { feature: 'Amount', value: -0.09 }] }
+          },
+          'Preset: escalate': {
+            decision: 'ESCALATE_INVEST', probability: 0.73, uncertainty: 0.034, anomaly_score: -0.11,
+            diagnostic: { v2_svm_prob: 0.68, v2_resolved: false, v3_belief: 0.71, v3_ignorance: 0.05, v3_conflict: 0.24, v4_reason_code: 'NOVEL_PATTERN_ESCALATE', v4_shap_contributions: [{ feature: 'V17', value: -0.91 }, { feature: 'V14', value: 0.55 }] }
+          },
+          'Preset: decline': {
+            decision: 'DECLINE', probability: 0.93, uncertainty: 0.007, anomaly_score: -0.19,
+            diagnostic: { v2_svm_prob: 0.91, v2_resolved: false, v3_belief: 0.93, v3_ignorance: 0.02, v3_conflict: 0.05, v4_reason_code: 'HIGH_RISK_DECLINE', v4_shap_contributions: [{ feature: 'V17', value: -1.42 }, { feature: 'V14', value: 0.88 }, { feature: 'V12', value: -0.67 }] }
+          },
+          'Preset: pend': {
+            decision: 'PEND', probability: 0.38, uncertainty: 0.041, anomaly_score: -0.05,
+            diagnostic: { v2_svm_prob: 0.03, v2_resolved: true, v3_belief: 0.41, v3_ignorance: 0.35, v3_conflict: 0.24, v4_reason_code: 'PEND_UNRESOLVED', v4_shap_contributions: [{ feature: 'V10', value: 0.33 }, { feature: 'V4', value: -0.18 }] }
+          },
         };
+
+        if (isPreset && presetMocks[label]) {
+          data = presetMocks[label];
+        } else {
+          // Random sandbox simulation
+          const prob = Math.random();
+          const std = Math.random() * 0.05;
+          const anomaly = Math.random() * 0.2 - 0.1;
+          let decision = 'APPROVE';
+
+          if (activeVersion === 'V1') {
+            if (prob < 0.3) decision = std >= 0.02 ? 'ABSTAIN' : 'APPROVE';
+            else if (prob >= 0.8) decision = std >= 0.02 ? 'ESCALATE_INVEST' : 'DECLINE';
+            else decision = 'STEP_UP_AUTH';
+          } else if (activeVersion === 'V2') {
+            if (prob < 0.3) {
+              decision = std >= 0.02 ? (Math.random() > 0.5 ? 'APPROVE' : 'STEP_UP_AUTH') : 'APPROVE';
+            } else if (prob >= 0.8) {
+              decision = std >= 0.02 ? 'ESCALATE_INVEST' : 'DECLINE';
+            } else decision = 'STEP_UP_AUTH';
+          } else if (activeVersion === 'V3') {
+            if (prob < 0.3) {
+              decision = std >= 0.02 ? (Math.random() > 0.5 ? 'APPROVE' : 'STEP_UP_AUTH') : 'APPROVE';
+            } else if (prob >= 0.8) {
+              decision = std >= 0.02 ? (Math.random() > 0.6 ? 'AUTO_DECLINE' : 'STEP_UP_AUTH') : 'DECLINE';
+            } else decision = 'STEP_UP_AUTH';
+          } else { // V4
+            if (prob < 0.3) {
+              decision = std >= 0.02 ? (Math.random() > 0.5 ? 'APPROVE' : 'STEP_UP_AUTH') : 'APPROVE';
+            } else if (prob >= 0.8) {
+              decision = std >= 0.02 ? (Math.random() > 0.6 ? 'DECLINE' : 'STEP_UP_AUTH') : 'DECLINE';
+            } else {
+              decision = Math.random() > 0.5 ? 'PEND' : 'STEP_UP_AUTH';
+            }
+          }
+
+          data = {
+            decision,
+            probability: prob,
+            uncertainty: std,
+            anomaly_score: anomaly,
+            diagnostic: {
+              v2_svm_prob: Math.random() * 0.05,
+              v2_resolved: std >= 0.02 && prob < 0.3,
+              v3_belief: Math.random(),
+              v3_ignorance: Math.random() * 0.1,
+              v3_conflict: Math.random() * 0.3,
+              v4_reason_code: 'HIGH_UNCERTAINTY_V4',
+              v4_shap_contributions: [
+                { feature: 'V17', value: -0.85 },
+                { feature: 'V14', value: 0.42 },
+                { feature: 'Amount', value: -0.12 }
+              ]
+            }
+          };
+        }
       }
 
       const txnData = {

@@ -1,5 +1,5 @@
 import React from 'react';
-import { User, Award, Calendar, FileText, Code2, Link as LinkIcon, BookOpen } from 'lucide-react';
+import { Award, Calendar, FileText, Code2, Link as LinkIcon, BookOpen, ExternalLink } from 'lucide-react';
 
 export const Profile: React.FC = () => {
   const bibtex = `@article{kumar2026knowing,
@@ -15,8 +15,8 @@ export const Profile: React.FC = () => {
       {/* Profile Overview */}
       <section className="max-w-5xl mx-auto grid md:grid-cols-3 gap-8">
         <div className="glass-card p-6 flex flex-col items-center text-center space-y-4 md:col-span-1">
-          <div className="w-24 h-24 rounded-full bg-cyber-border flex items-center justify-center text-cyber-accent border-2 border-cyber-accent/50 shadow-[0_0_15px_rgba(0,212,170,0.2)]">
-            <User size={48} />
+          <div className="w-24 h-24 rounded-full bg-gradient-to-br from-cyber-accent/20 to-purple-500/20 flex items-center justify-center border-2 border-cyber-accent/50 shadow-[0_0_20px_rgba(0,212,170,0.25)]">
+            <span className="text-3xl font-black font-mono text-cyber-accent tracking-tight">DK</span>
           </div>
           <div className="space-y-1">
             <h3 className="text-xl font-bold text-white">Devansh Kumar</h3>
@@ -64,12 +64,16 @@ export const Profile: React.FC = () => {
               <Code2 size={14} /> Repository Source
             </a>
             <a
-              href="#"
-              onClick={(e) => e.preventDefault()}
+              href="https://www.linkedin.com/in/devantaris"
+              target="_blank"
+              rel="noopener noreferrer"
               className="px-4 py-2 border border-cyber-border hover:border-gray-600 text-xs rounded font-mono text-gray-400 hover:text-white flex items-center gap-1.5 transition-colors"
             >
-              <FileText size={14} /> Download PDF Draft
+              <ExternalLink size={14} /> LinkedIn
             </a>
+            <div className="px-4 py-2 border border-yellow-500/30 bg-yellow-950/20 text-xs rounded font-mono text-yellow-400 flex items-center gap-1.5">
+              <FileText size={14} /> Paper Under Review · IEEE Access
+            </div>
           </div>
         </div>
       </section>
